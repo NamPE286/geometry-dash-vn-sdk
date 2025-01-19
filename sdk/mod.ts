@@ -1,12 +1,13 @@
+/**
+ * Geometry Dash VN SDK client
+ * @module
+ */
+
 import { createClient as _createClient } from "@supabase/supabase-js";
 import type { Database } from "#types/supabase.ts";
 import { UserFactory } from "#sdk/classes/userFactory.ts";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-/**
- * Geometry Dash VN SDK client
- * @module
- */
 export class Client {
     private APIUrl: string;
     db: SupabaseClient<Database>;
