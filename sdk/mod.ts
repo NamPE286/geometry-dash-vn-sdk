@@ -1,20 +1,3 @@
-/**
- * Geometry Dash VN SDK client
- * @example
- * ```js
- * import { Client } from "@nampe286/geometry-dash-vn-sdk";
- * 
- * const SUPABASE_API_URL: string = "your-supabase-api-url";
- * const SUPABASE_API_KEY: string = "your-supabase-api-key";
- * const API_URL: string = "your-api-url";
- * 
- * const client = new Client(SUPABASE_API_URL, SUPABASE_API_KEY, API_URL);
- * 
- * console.log(await client.user.get("uuid"));
- * ```
- * @module
- */
-
 import { createClient as _createClient } from "@supabase/supabase-js";
 import type { Database } from "#types/supabase.ts";
 import { UserFactory } from "#sdk/classes/userFactory.ts";

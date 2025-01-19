@@ -1,20 +1,8 @@
-/**
- * Middleware to authenticate user using JWT.
- * @module middleware/userAuth
- */
-
 // @ts-types="@types/express"
 import type { NextFunction, Request, Response } from "express";
 import jwt from "npm:jsonwebtoken";
 import { supabase } from "#api/supabase.ts";
 
-/**
- * Middleware to authenticate user using JWT.
- * @function
- * @param {Request} req - Express request object
- * @param {Response} res - Express response object
- * @param {NextFunction} next - Express next middleware function
- */
 export default async function (req: Request, res: Response, next: NextFunction) {
     const auth = req.headers.authorization;
 
