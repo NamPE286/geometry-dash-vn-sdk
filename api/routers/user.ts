@@ -5,7 +5,9 @@ import { supabase } from "#api/supabase.ts";
 const router = express.Router();
 
 router.patch("/", async (req, res) => {
-    if (req.body.user_id !== res.locals.user.user_id) {
+    const { user } = res.locals;
+
+    if (req.body.user_id !== user.user_id || !user.user_role.edit_own_profile) {
         res.status(403).send();
         return;
     }

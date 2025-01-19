@@ -33,7 +33,8 @@ INSERT INTO "public"."levels" ("id", "created_at", "name", "creator", "youtube_v
 
 INSERT INTO "public"."level_rating" ("id", "list", "rating", "min_progress") VALUES
 	(52374843, 'demon', 3000, 60),
-	(71025973, 'demon', 4100, 60);
+	(71025973, 'demon', 4100, 60),
+	(52374843, 'featured', 1000, 100);
 
 
 --
