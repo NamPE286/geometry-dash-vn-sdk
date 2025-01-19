@@ -6,7 +6,7 @@ deno add jsr:@nampe286/geometry-dash-vn-sdk
 ```
 
 ## Usage
-```js
+```ts
 import { Client } from "@nampe286/geometry-dash-vn-sdk";
 
 const SUPABASE_API_URL: string = "your-supabase-api-url";
