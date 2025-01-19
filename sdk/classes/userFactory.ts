@@ -3,6 +3,7 @@ import type { Database } from "#types/supabase.ts";
 
 type User = Database["public"]["Tables"]["users"];
 
+/** User factory class */
 export class UserFactory {
     private db: SupabaseClient<Database>;
     private APIUrl: string;
