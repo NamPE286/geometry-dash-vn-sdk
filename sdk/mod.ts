@@ -20,6 +20,7 @@ import type { Database } from "#types/supabase.ts";
 import { UserFactory } from "#sdk/classes/userFactory.ts";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+/** Geometry Dash VN client class */
 export class Client {
     private APIUrl: string;
     db: SupabaseClient<Database>;
