@@ -1,6 +1,6 @@
 {
     "name": "@nampe286/geometry-dash-vn-sdk",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "license": "GPL-v3",
     "exports":"./sdk/mod.ts",
     "tasks": {
