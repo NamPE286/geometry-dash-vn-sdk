@@ -1,10 +1,19 @@
 # Geometry Dash VN SDK
 
-## Prerequisite
-- deno 2.1.6
-- Supabase CLI
+## Installation
+```bash
+deno add jsr:@nampe286/geometry-dash-vn-sdk
+```
 
-## Example
+## Usage
 ```js
+import { Client } from "@nampe286/geometry-dash-vn-sdk";
 
+const SUPABASE_API_URL: string = "your-supabase-api-url";
+const SUPABASE_API_KEY: string = "your-supabase-api-key";
+const API_URL: string = "your-api-url";
+
+const client = new Client(SUPABASE_API_URL, SUPABASE_API_KEY, API_URL);
+
+console.log(await client.user.get("uuid"));
 ```

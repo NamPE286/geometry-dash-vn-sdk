@@ -1,5 +1,10 @@
 import { Client } from "#sdk/mod.ts";
 
+/**
+ * Create new signed in Geometry Dash VN client
+ * @param serviceRole Whether to use service role Supabase API Key
+ * @returns Signed in Geometry Dash VN client
+ */
 export default async function (serviceRole: boolean = false) {
     const client = new Client(
         Deno.env.get("SUPABASE_API_URL")!,
