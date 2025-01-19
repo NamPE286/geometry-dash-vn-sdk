@@ -1,5 +1,5 @@
 import { assertEquals } from "jsr:@std/assert";
-import { Client } from "#sdk/main.ts";
+import { Client } from "#sdk/mod.ts";
 import signedInClient from "#sdk/tests/utils/signedInClient.ts";
 import "jsr:@std/dotenv/load";
 

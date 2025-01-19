@@ -1,4 +1,4 @@
-import { Client } from "#sdk/main.ts";
+import { Client } from "#sdk/mod.ts";
 
 export default async function (serviceRole: boolean = false) {
     const client = new Client(
