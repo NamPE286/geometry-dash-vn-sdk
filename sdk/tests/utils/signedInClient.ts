@@ -5,10 +5,16 @@ import { Client } from "#sdk/mod.ts";
  * @param serviceRole Whether to use service role Supabase API Key
  * @returns Signed in Geometry Dash VN client
  */
-export default async function (serviceRole: boolean = false) {
+export default async function (role: string = "default") {
     const client = new Client(
         Deno.env.get("SUPABASE_API_URL")!,
-        Deno.env.get(serviceRole ? "SUPABASE_SERVICE_ROLE_KEY" : "SUPABASE_ANON_KEY")!,
+        Deno.env.get("SUPABASE_ANON_KEY")!,
+        Deno.env.get("API_URL")!,
+    );
+
+    const client1 = new Client(
+        Deno.env.get("SUPABASE_API_URL")!,
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
         Deno.env.get("API_URL")!,
     );
 
@@ -22,13 +28,18 @@ export default async function (serviceRole: boolean = false) {
         password: "123456",
     });
 
-    const res = await client.db
+    const res = await client1.db
         .from("users")
-        .insert({ user_id: data.user?.id, name: "test" });
+        .insert({ user_id: data.user?.id, name: "test", role: role });
 
     if (res.error) {
-        await client.user.update({ user_id: data.user?.id, name: "test" });
+        await client1.db
+            .from("users")
+            .update({ user_id: data.user?.id, name: "test", role: role })
+            .match({ user_id: data.user?.id });
     }
+
+    await client1.db.auth.stopAutoRefresh();
 
     return client;
 }

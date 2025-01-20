@@ -4,6 +4,21 @@ import { supabase } from "#api/supabase.ts";
 
 const router = express.Router();
 
+router.post("/", async (req, res) => {
+    req.body.role = "default";
+
+    const { error } = await supabase
+        .from("users")
+        .insert(req.body);
+
+    if (error) {
+        console.error(error);
+        res.status(500).send();
+    }
+
+    res.status(201).send();
+});
+
 router.patch("/", async (req, res) => {
     const { user } = res.locals;
 
@@ -12,21 +27,19 @@ router.patch("/", async (req, res) => {
         return;
     }
 
+    delete req.body.role;
+
     const { error } = await supabase
         .from("users")
         .update(req.body)
         .eq("user_id", req.body.user_id);
 
     if (error) {
-        res.status(500).send(error);
+        console.error(error);
+        res.status(500).send();
     }
 
     res.send();
 });
 
-/**
- * Express router to mount user related functions on.
- * @type {Object}
- * @memberof module:routers/user
- */
 export default router;

@@ -23,7 +23,13 @@ export default async function (req: Request, res: Response, next: NextFunction) 
             .single();
 
         if (error) {
-            res.status(500).send(error);
+            if (req.path == "/user" && req.method == "POST") {
+                next();
+                return;
+            }
+            
+            console.error(error);
+            res.status(500).send();
             return;
         }
 

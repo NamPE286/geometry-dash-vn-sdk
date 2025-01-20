@@ -34,6 +34,35 @@ export type Database = {
   }
   public: {
     Tables: {
+      level_rating: {
+        Row: {
+          id: number
+          list: string
+          min_progress: number
+          rating: number
+        }
+        Insert: {
+          id?: number
+          list: string
+          min_progress?: number
+          rating: number
+        }
+        Update: {
+          id?: number
+          list?: string
+          min_progress?: number
+          rating?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "level_rating_id_fkey"
+            columns: ["id"]
+            isOneToOne: false
+            referencedRelation: "levels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       levels: {
         Row: {
           created_at: string
@@ -57,6 +86,45 @@ export type Database = {
           youtube_video_id?: string
         }
         Relationships: []
+      }
+      records: {
+        Row: {
+          created_at: string
+          level_id: number
+          progress: number
+          user_id: string
+          video_link: string
+        }
+        Insert: {
+          created_at?: string
+          level_id: number
+          progress: number
+          user_id: string
+          video_link: string
+        }
+        Update: {
+          created_at?: string
+          level_id?: number
+          progress?: number
+          user_id?: string
+          video_link?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "records_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "levels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "records_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["user_id"]
+          },
+        ]
       }
       user_role: {
         Row: {
@@ -134,10 +202,39 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      records_view: {
+        Row: {
+          level_id: number | null
+          list: string | null
+          no: number | null
+          point: number | null
+          progress: number | null
+          user_id: string | null
+          video_link: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "records_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "levels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "records_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
     }
     Functions: {
-      [_ in never]: never
+      refresh: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

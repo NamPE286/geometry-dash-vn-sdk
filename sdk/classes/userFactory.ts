@@ -22,14 +22,25 @@ export class UserFactory {
         return data;
     }
 
-    async add(obj: User["Insert"]): Promise<void> {
-        const { error } = await this.db
-            .from("users")
-            .insert(obj);
+    async create(obj: User["Update"]): Promise<void> {
+        const { data, error } = await this.db.auth.getUser();
 
         if (error) {
             throw error;
         }
+
+        obj.user_id = data.user.id;
+
+        const res = await fetch(`${this.APIUrl}/user`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + (await this.db.auth.getSession()).data.session?.access_token,
+            },
+            body: JSON.stringify(obj),
+        });
+
+        await res.body?.cancel();
     }
 
     async update(obj: User["Update"]): Promise<void> {
