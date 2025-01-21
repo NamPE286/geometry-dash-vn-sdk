@@ -1,10 +1,13 @@
 import { assertEquals } from "jsr:@std/assert";
-import { Client } from "#sdk/mod.ts";
-import signedInClient from "#sdk/tests/utils/signedInClient.ts";
+import { createClient as _createClient } from "@supabase/supabase-js";
+import { cleanup, createClient } from "../utils/client.ts";
+import type { Database } from "#types/supabase.ts";
 import "jsr:@std/dotenv/load";
 
+const supabase = _createClient<Database>(Deno.env.get("SUPABASE_API_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+
 Deno.test("Insert new user", async () => {
-    const client = new Client(Deno.env.get("SUPABASE_API_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, Deno.env.get("API_URL")!);
+    const client = await createClient(false);
 
     const { data, error } = await client.db.auth.signUp({
         email: "test@bitbucket.local",
@@ -12,19 +15,13 @@ Deno.test("Insert new user", async () => {
     });
 
     if (error) {
-        console.warn(error.message);
-        await client.db.auth.stopAutoRefresh();
-        assertEquals(0, 0);
-
-        return;
+        throw error;
     }
 
     await client.user.create({ name: "newuser" });
 
     const user = await client.user.get(data.user?.id!);
     user.created_at = "";
-
-    await client.db.auth.stopAutoRefresh();
 
     assertEquals(user, {
         user_id: data.user?.id!,
@@ -35,10 +32,13 @@ Deno.test("Insert new user", async () => {
         role: "default",
         is_hidden: false,
     });
+
+    await client.db.auth.stopAutoRefresh();
+    await supabase.auth.admin.deleteUser(data.user?.id!);
 });
 
 Deno.test("Edit user by UID", async () => {
-    const client = await signedInClient();
+    const client = await createClient(true);
     const { data } = await client.db.auth.getUser();
 
     await client.user.update({
@@ -48,16 +48,14 @@ Deno.test("Edit user by UID", async () => {
 
     const user = await client.user.get(data.user?.id!);
 
-    await client.db.auth.stopAutoRefresh();
-
     assertEquals(user.name, "test123");
+
+    await cleanup(client);
 });
 
 Deno.test("Get user by UID", async () => {
-    const client = new Client(Deno.env.get("SUPABASE_API_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, Deno.env.get("API_URL")!);
+    const client = await createClient(false);
     const user = await client.user.get("ded6b269-a856-4a49-a1ae-d8837d50e350");
-
-    client.db.auth.stopAutoRefresh();
 
     assertEquals(user, {
         user_id: "ded6b269-a856-4a49-a1ae-d8837d50e350",
@@ -68,4 +66,6 @@ Deno.test("Get user by UID", async () => {
         role: "default",
         is_hidden: false,
     });
+
+    await cleanup(client);
 });
