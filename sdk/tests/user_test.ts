@@ -4,9 +4,8 @@ import { cleanup, createClient } from "../utils/client.ts";
 import type { Database } from "#types/supabase.ts";
 import "jsr:@std/dotenv/load";
 
-const supabase = _createClient<Database>(Deno.env.get("SUPABASE_API_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-
 Deno.test("Insert new user", async () => {
+    const supabase = _createClient<Database>(Deno.env.get("SUPABASE_API_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
     const client = await createClient(false);
 
     const { data, error } = await client.db.auth.signUp({
@@ -35,6 +34,7 @@ Deno.test("Insert new user", async () => {
 
     await client.db.auth.stopAutoRefresh();
     await supabase.auth.admin.deleteUser(data.user?.id!);
+    await supabase.auth.stopAutoRefresh();
 });
 
 Deno.test("Edit user by UID", async () => {

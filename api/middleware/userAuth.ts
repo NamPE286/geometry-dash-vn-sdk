@@ -27,7 +27,7 @@ export default async function (req: Request, res: Response, next: NextFunction) 
                 next();
                 return;
             }
-            
+
             console.error(error);
             res.status(500).send();
             return;
@@ -35,6 +35,7 @@ export default async function (req: Request, res: Response, next: NextFunction) 
 
         res.locals.user = data;
     } catch {
+        console.error("Invalid token");
         res.status(401).send();
         return;
     }

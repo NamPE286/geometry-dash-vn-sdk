@@ -2,12 +2,14 @@ import { createClient as _createClient } from "@supabase/supabase-js";
 import type { Database } from "#types/supabase.ts";
 import { UserFactory } from "#sdk/classes/userFactory.ts";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { Admin } from "#sdk/classes/admin.ts";
 
 /** Geometry Dash VN client class */
 export class Client {
     private APIUrl: string;
     db: SupabaseClient<Database>;
     user: UserFactory;
+    admin: Admin;
 
     /**
      * Create new client
@@ -19,5 +21,6 @@ export class Client {
         this.db = _createClient<Database>(supabaseAPIUrl, supabaseAPIKey);
         this.APIUrl = APIUrl;
         this.user = new UserFactory(this.db, this.APIUrl);
+        this.admin = new Admin(this.db, this.APIUrl);
     }
 }

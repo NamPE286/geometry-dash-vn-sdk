@@ -17,6 +17,8 @@ router.patch("/refresh", async (_req, res) => {
     if (error) {
         console.error(error);
         res.status(500).send();
+        
+        return;
     }
 
     res.status(200).send();
