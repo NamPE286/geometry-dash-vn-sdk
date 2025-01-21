@@ -2,13 +2,14 @@
     "name": "@nampe286/geometry-dash-vn-sdk",
     "version": "0.0.9",
     "license": "GPL-v3",
-    "exports":"./sdk/mod.ts",
+    "exports": "./sdk/mod.ts",
     "tasks": {
         "dev": "deno run --allow-all --watch api/main.ts",
         "dbcommit": "supabase db diff -s public -f local",
         "dbdump": "supabase db dump --local --data-only --schema public > ./supabase/seed.sql",
         "test": "deno test --allow-all",
-        "typegen": "supabase gen types typescript --local > ./types/supabase.ts"
+        "typegen": "supabase gen types typescript --local > ./types/supabase.ts",
+        "dbsync": "deno run dbdump; deno run dbcommit; supabase db reset; deno run typegen"
     },
     "imports": {
         "@std/assert": "jsr:@std/assert@1",

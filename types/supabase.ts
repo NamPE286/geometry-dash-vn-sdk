@@ -179,7 +179,7 @@ export type Database = {
           name: string
           province?: string | null
           role?: string
-          user_id?: string
+          user_id: string
         }
         Update: {
           city?: string | null
