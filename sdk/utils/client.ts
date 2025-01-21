@@ -3,16 +3,11 @@ import { createClient as _createClient } from "@supabase/supabase-js";
 import type { Database } from "#types/supabase.ts";
 import "jsr:@std/dotenv/load";
 
-export async function createClient(signedIn: boolean = false, role: string = "default") {
-    if (!signedIn) {
-        return new Client(
-            Deno.env.get("SUPABASE_API_URL")!,
-            Deno.env.get("SUPABASE_ANON_KEY")!,
-            Deno.env.get("API_URL")!,
-        );
-    }
-
-    const supabase = _createClient<Database>(Deno.env.get("SUPABASE_API_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+export async function createSignedInClient(role: string = "default") {
+    const supabase = _createClient<Database>(
+        Deno.env.get("SUPABASE_API_URL")!,
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    );
     const client = new Client(
         Deno.env.get("SUPABASE_API_URL")!,
         Deno.env.get("SUPABASE_ANON_KEY")!,
@@ -39,22 +34,27 @@ export async function createClient(signedIn: boolean = false, role: string = "de
     return client;
 }
 
+export function createClient() {
+    return new Client(
+        Deno.env.get("SUPABASE_API_URL")!,
+        Deno.env.get("SUPABASE_ANON_KEY")!,
+        Deno.env.get("API_URL")!,
+    );
+}
+
 export async function cleanup(client: Client) {
-    const supabase = _createClient<Database>(Deno.env.get("SUPABASE_API_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    const supabase = _createClient<Database>(
+        Deno.env.get("SUPABASE_API_URL")!,
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    );
+    const { data } = await client.db.auth.getUser();
 
-    const { data } = await client.db.auth.signInWithPassword({
-        email: "test@bitbucket.local",
-        password: "123456",
-    });
+    await supabase
+        .from("users")
+        .delete()
+        .eq("user_id", data.user!.id);
 
-    if (data.user) {
-        await supabase
-            .from("users")
-            .delete()
-            .eq("user_id", data.user.id);
-
-        await supabase.auth.admin.deleteUser(data.user.id);
-    }
+    await supabase.auth.admin.deleteUser(data.user!.id);
 
     await client.db.auth.stopAutoRefresh();
     await supabase.auth.stopAutoRefresh();

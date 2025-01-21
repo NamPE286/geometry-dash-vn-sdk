@@ -7,7 +7,8 @@ export default async function (req: Request, res: Response, next: NextFunction) 
     const auth = req.headers.authorization;
 
     if (!auth?.startsWith("Bearer ")) {
-        res.status(401).send();
+        console.error("Invalid token format");
+        res.status(400).send();
         return;
     }
 
@@ -22,6 +23,8 @@ export default async function (req: Request, res: Response, next: NextFunction) 
             .eq("user_id", uid)
             .single();
 
+        res.locals.user_id = uid;
+
         if (error) {
             if (req.path == "/user" && req.method == "POST") {
                 next();
@@ -34,8 +37,8 @@ export default async function (req: Request, res: Response, next: NextFunction) 
         }
 
         res.locals.user = data;
-    } catch {
-        console.error("Invalid token");
+    } catch (err) {
+        console.error(err);
         res.status(401).send();
         return;
     }

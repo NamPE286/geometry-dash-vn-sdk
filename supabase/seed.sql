@@ -53,11 +53,7 @@ INSERT INTO "public"."user_role" ("name", "add_level", "modify_level", "delete_l
 --
 
 INSERT INTO "public"."users" ("user_id", "created_at", "name", "city", "province", "role", "is_hidden") VALUES
-	('ded6b269-a856-4a49-a1ae-d8837d50e350', '2025-01-18 09:56:19.965229+00', 'default', 'Hạ Long', 'Quảng Ninh', 'default', false),
-	('e4a1770f-e7bb-4f52-bb0f-63efc87e3a04', '2025-01-21 09:01:10.597403+00', 'newuser', NULL, NULL, 'default', false),
-	('657a4115-7307-450e-b71c-f27be48c7392', '2025-01-21 09:07:48.629213+00', 'newuser', NULL, NULL, 'default', false),
-	('43a40131-c9da-41e2-9e85-cc3370b3a853', '2025-01-21 09:07:52.716756+00', 'newuser', NULL, NULL, 'default', false),
-	('62198da1-fa6d-4a6d-9a45-8988358a9b9e', '2025-01-21 09:59:33.147339+00', 'newuser', NULL, NULL, 'default', false);
+	('ded6b269-a856-4a49-a1ae-d8837d50e350', '2025-01-18 09:56:19.965229+00', 'default', 'Hạ Long', 'Quảng Ninh', 'default', false);
 
 
 --

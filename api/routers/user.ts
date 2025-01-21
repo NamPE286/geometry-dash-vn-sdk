@@ -5,7 +5,9 @@ import { supabase } from "#api/supabase.ts";
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-    req.body.role = "default";
+    delete req.body.user_role;
+
+    req.body.user_id = res.locals.user_id;
 
     const { error } = await supabase
         .from("users")
@@ -22,17 +24,18 @@ router.post("/", async (req, res) => {
 router.patch("/", async (req, res) => {
     const { user } = res.locals;
 
-    if (req.body.user_id !== user.user_id || !user.user_role.edit_own_profile) {
+    if (!user.user_role.edit_own_profile) {
         res.status(403).send();
         return;
     }
 
     delete req.body.role;
+    delete req.body.user_id;
 
     const { error } = await supabase
         .from("users")
         .update(req.body)
-        .eq("user_id", req.body.user_id);
+        .eq("user_id", user.user_id);
 
     if (error) {
         console.error(error);

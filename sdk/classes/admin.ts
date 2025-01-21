@@ -14,7 +14,7 @@ export class Admin {
         });
 
         if (!(200 <= res.status && res.status < 300)) {
-            throw new Error();
+            throw new Error(String(res.status));
         }
 
         await res.body?.cancel();

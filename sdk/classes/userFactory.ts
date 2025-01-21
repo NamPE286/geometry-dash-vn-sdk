@@ -22,14 +22,6 @@ export class UserFactory {
     }
 
     async create(obj: User["Update"]): Promise<void> {
-        const { data, error } = await this.db.auth.getUser();
-
-        if (error) {
-            throw error;
-        }
-
-        obj.user_id = data.user.id;
-
         const res = await fetch(`${this.APIUrl}/user`, {
             method: "POST",
             headers: {
@@ -38,6 +30,10 @@ export class UserFactory {
             },
             body: JSON.stringify(obj),
         });
+
+        if (!(200 <= res.status && res.status < 300)) {
+            throw new Error(String(res.status));
+        }
 
         await res.body?.cancel();
     }
