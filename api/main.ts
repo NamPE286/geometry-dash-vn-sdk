@@ -3,6 +3,7 @@ import express from "express";
 import user from "#api/routers/user.ts";
 import func from "#api/routers/func.ts";
 import userAuth from "#api/middleware/userAuth.ts";
+import pkg from "../deno.json" with { type: "json" };
 
 const app = express();
 
@@ -14,6 +15,14 @@ app.use((req, res, next) => {
 
     next();
 });
+
+app.get("/", (_req, res) => {
+    res.send({
+        version: pkg.version,
+        timestamp: new Date(),
+    });
+});
+
 app.use(userAuth);
 
 app.use("/user", user);

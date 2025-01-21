@@ -4,7 +4,7 @@ import { supabase } from "#api/supabase.ts";
 
 const router = express.Router();
 
-router.patch("/refresh", async (req, res) => {
+router.patch("/refresh", async (_req, res) => {
     const { user } = res.locals;
 
     if (user.role != "admin") {
