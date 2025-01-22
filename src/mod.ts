@@ -1,6 +1,6 @@
 import { createClient as _createClient } from "@supabase/supabase-js";
-import type { Database } from "#types/supabase.ts";
-import { User } from "./classes/user.ts";
+import type { Database } from "#src/types/supabase.ts";
+import { User } from "#src/classes/user.ts";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { Admin } from "#src/classes/admin.ts";
 import { Level } from "#src/classes/level.ts";

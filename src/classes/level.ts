@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database, Tables } from "#types/supabase.ts";
+import type { Database, Tables } from "#src/types/supabase.ts";
 
 type TLevel = Database["public"]["Tables"]["levels"];
 type TLevelData = TLevel["Row"] & { ratings: Tables<"level_rating">[] };

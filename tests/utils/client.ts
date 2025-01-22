@@ -1,6 +1,6 @@
 import { Client } from "#src/mod.ts";
 import { createClient } from "@supabase/supabase-js";
-import type { Database } from "#types/supabase.ts";
+import type { Database } from "#src/types/supabase.ts";
 import "jsr:@std/dotenv/load";
 
 export const client = new Client(
