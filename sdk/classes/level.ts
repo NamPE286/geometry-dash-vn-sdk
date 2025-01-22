@@ -7,14 +7,18 @@ type TLevelData = TLevel["Row"] & { ratings: Tables<"level_rating">[] };
 export interface LevelData extends TLevelData {}
 
 export class LevelData {
+    private ratingMap: Map<string, Tables<"level_rating">> | null = null;
+
     getRating(list: string) {
-        for (const i of this.ratings) {
-            if (i.list === list) {
-                return i;
+        if (this.ratingMap === null) {
+            this.ratingMap = new Map<string, Tables<"level_rating">>();
+
+            for (const i of this.ratings) {
+                this.ratingMap.set(i.list, i);
             }
         }
 
-        return null;
+        return this.ratingMap.get(list);
     }
 
     constructor(data: TLevelData) {

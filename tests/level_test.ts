@@ -26,4 +26,8 @@ Deno.test("Get level rating", async () => {
         rating: 3000,
         min_progress: 60,
     });
+
+    const res1 = (await client.level.get(52374843)).getRating("nonExistence");
+
+    assertEquals(res1, undefined);
 });
