@@ -1,5 +1,5 @@
 import { assertEquals } from "jsr:@std/assert";
-import { client, signInClient, signOutClient } from "#src/utils/client.ts";
+import { client, signInClient, signOutClient } from "./utils/client.ts";
 import "jsr:@std/dotenv/load";
 
 Deno.test("Insert new user", async () => {
