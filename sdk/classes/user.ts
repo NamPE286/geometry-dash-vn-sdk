@@ -1,13 +1,13 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "#types/supabase.ts";
 
-type User = Database["public"]["Tables"]["users"];
+type TUser = Database["public"]["Tables"]["users"];
 
-export class UserFactory {
+export class User {
     private db: SupabaseClient<Database>;
     private APIUrl: string;
 
-    async get(uid: string): Promise<User["Row"]> {
+    async get(uid: string): Promise<TUser["Row"]> {
         const { data, error } = await this.db
             .from("users")
             .select("*")
@@ -21,7 +21,7 @@ export class UserFactory {
         return data;
     }
 
-    async create(obj: User["Update"]): Promise<void> {
+    async create(obj: TUser["Update"]): Promise<void> {
         const res = await fetch(`${this.APIUrl}/user`, {
             method: "POST",
             headers: {
@@ -38,7 +38,7 @@ export class UserFactory {
         await res.body?.cancel();
     }
 
-    async update(obj: User["Update"]): Promise<void> {
+    async update(obj: TUser["Update"]): Promise<void> {
         const res = await fetch(`${this.APIUrl}/user`, {
             method: "PATCH",
             headers: {
