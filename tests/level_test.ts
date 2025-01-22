@@ -2,9 +2,9 @@ import { client } from "#sdk/utils/client.ts";
 import { assertEquals } from "@std/assert/equals";
 
 Deno.test("Get level by ID", async () => {
-    const level = await client.level.get(52374843);
+    const { data } = await client.level.get(52374843);
 
-    assertEquals(JSON.parse(JSON.stringify(level)), {
+    assertEquals(data, {
         id: 52374843,
         created_at: "2025-01-19T18:16:01.572288+00:00",
         name: "Zodiac",

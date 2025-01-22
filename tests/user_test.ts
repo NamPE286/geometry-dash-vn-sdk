@@ -15,7 +15,7 @@ Deno.test("Insert new user", async () => {
 
         await client.user.create({ name: "newuser" });
 
-        const user = await client.user.get(data.user?.id!);
+        const { data: user } = await client.user.get(data.user?.id!);
         user.created_at = "";
 
         assertEquals(user, {
@@ -47,7 +47,7 @@ Deno.test("Edit user by UID", async () => {
             name: "test123",
         });
 
-        const user = await client.user.get(data.user?.id!);
+        const { data: user } = await client.user.get(data.user?.id!);
 
         await signOutClient();
 
@@ -61,9 +61,9 @@ Deno.test("Edit user by UID", async () => {
 Deno.test(
     "Get user by UID",
     async () => {
-        const user = await client.user.get("ded6b269-a856-4a49-a1ae-d8837d50e350");
+        const { data } = await client.user.get("ded6b269-a856-4a49-a1ae-d8837d50e350");
 
-        assertEquals(user, {
+        assertEquals(data, {
             user_id: "ded6b269-a856-4a49-a1ae-d8837d50e350",
             created_at: "2025-01-18T09:56:19.965229+00:00",
             name: "default",

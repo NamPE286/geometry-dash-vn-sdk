@@ -2,12 +2,21 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "#types/supabase.ts";
 
 type TUser = Database["public"]["Tables"]["users"];
+type TUserData = TUser["Row"];
+
+export class UserData {
+    data: TUserData;
+
+    constructor(data: TUserData) {
+        this.data = data;
+    }
+}
 
 export class User {
     private db: SupabaseClient<Database>;
     private APIUrl: string;
 
-    async get(uid: string): Promise<TUser["Row"]> {
+    async get(uid: string): Promise<UserData> {
         const { data, error } = await this.db
             .from("users")
             .select("*")
@@ -18,7 +27,7 @@ export class User {
             throw error;
         }
 
-        return data;
+        return new UserData(data);
     }
 
     async create(obj: TUser["Update"]): Promise<void> {
@@ -26,7 +35,8 @@ export class User {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer " + (await this.db.auth.getSession()).data.session?.access_token,
+                Authorization: "Bearer " +
+                    (await this.db.auth.getSession()).data.session?.access_token,
             },
             body: JSON.stringify(obj),
         });
@@ -43,7 +53,8 @@ export class User {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer " + (await this.db.auth.getSession()).data.session?.access_token,
+                Authorization: "Bearer " +
+                    (await this.db.auth.getSession()).data.session?.access_token,
             },
             body: JSON.stringify(obj),
         });

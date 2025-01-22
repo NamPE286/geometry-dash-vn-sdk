@@ -4,16 +4,15 @@ import type { Database, Tables } from "#types/supabase.ts";
 type TLevel = Database["public"]["Tables"]["levels"];
 type TLevelData = TLevel["Row"] & { ratings: Tables<"level_rating">[] };
 
-export interface LevelData extends TLevelData {}
-
 export class LevelData {
+    data: TLevelData;
     private ratingMap: Map<string, Tables<"level_rating">> | null = null;
 
     getRating(list: string): Tables<"level_rating"> | undefined {
         if (this.ratingMap === null) {
             this.ratingMap = new Map<string, Tables<"level_rating">>();
 
-            for (const i of this.ratings) {
+            for (const i of this.data.ratings) {
                 this.ratingMap.set(i.list, i);
             }
         }
@@ -22,7 +21,7 @@ export class LevelData {
     }
 
     constructor(data: TLevelData) {
-        Object.assign(this, data);
+        this.data = data;
     }
 }
 
