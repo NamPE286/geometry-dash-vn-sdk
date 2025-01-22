@@ -4,6 +4,7 @@ import { User } from "#src/classes/user.ts";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { Admin } from "#src/classes/admin.ts";
 import { Level } from "#src/classes/level.ts";
+import { List } from "#src/classes/list.ts";
 
 /** Geometry Dash VN client class */
 export class Client {
@@ -12,6 +13,7 @@ export class Client {
     user: User;
     admin: Admin;
     level: Level;
+    list: List;
 
     /**
      * Create new client
@@ -25,5 +27,6 @@ export class Client {
         this.user = new User(this.db, this.APIUrl);
         this.admin = new Admin(this.db, this.APIUrl);
         this.level = new Level(this.db, this.APIUrl);
+        this.list = new List(this.db, this.APIUrl);
     }
 }

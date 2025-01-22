@@ -61,6 +61,13 @@ export type Database = {
             referencedRelation: "levels"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "level_rating_list_fkey"
+            columns: ["list"]
+            isOneToOne: false
+            referencedRelation: "lists"
+            referencedColumns: ["name"]
+          },
         ]
       }
       levels: {
@@ -84,6 +91,21 @@ export type Database = {
           id?: number
           name?: string
           youtube_video_id?: string
+        }
+        Relationships: []
+      }
+      lists: {
+        Row: {
+          description: string | null
+          name: string
+        }
+        Insert: {
+          description?: string | null
+          name: string
+        }
+        Update: {
+          description?: string | null
+          name?: string
         }
         Relationships: []
       }
@@ -213,6 +235,13 @@ export type Database = {
           video_link: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "level_rating_list_fkey"
+            columns: ["list"]
+            isOneToOne: false
+            referencedRelation: "lists"
+            referencedColumns: ["name"]
+          },
           {
             foreignKeyName: "records_level_id_fkey"
             columns: ["level_id"]
