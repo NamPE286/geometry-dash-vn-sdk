@@ -1,10 +1,8 @@
 import { assertEquals } from "jsr:@std/assert";
-import { cleanup, createClient, createSignedInClient } from "#sdk/utils/client.ts";
+import { client, signInClient, signOutClient } from "#sdk/utils/client.ts";
 import "jsr:@std/dotenv/load";
 
 Deno.test("Insert new user", async () => {
-    const client = createClient();
-
     try {
         const { data, error } = await client.db.auth.signUp({
             email: "test@bitbucket.local",
@@ -30,37 +28,40 @@ Deno.test("Insert new user", async () => {
             is_hidden: false,
         });
     } catch (err) {
-        await cleanup(client);
+        await signOutClient();
 
         throw err;
     }
 
-    await cleanup(client);
+    await signOutClient();
 });
 
 Deno.test("Edit user by UID", async () => {
-    const client = await createSignedInClient();
-    const { data } = await client.db.auth.getUser();
+    await signInClient();
 
-    await client.user.update({
-        user_id: data.user?.id,
-        name: "test123",
-    });
+    try {
+        const { data } = await client.db.auth.getUser();
 
-    const user = await client.user.get(data.user?.id!);
+        await client.user.update({
+            user_id: data.user?.id,
+            name: "test123",
+        });
 
-    await cleanup(client);
+        const user = await client.user.get(data.user?.id!);
 
-    assertEquals(user.name, "test123");
+        await signOutClient();
+
+        assertEquals(user.name, "test123");
+    } catch (err) {
+        await signOutClient();
+        throw err;
+    }
 });
 
 Deno.test(
     "Get user by UID",
     async () => {
-        const client = createClient();
         const user = await client.user.get("ded6b269-a856-4a49-a1ae-d8837d50e350");
-
-        await client.db.auth.stopAutoRefresh();
 
         assertEquals(user, {
             user_id: "ded6b269-a856-4a49-a1ae-d8837d50e350",

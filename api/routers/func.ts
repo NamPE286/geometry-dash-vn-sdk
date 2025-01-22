@@ -7,6 +7,8 @@ const router = express.Router();
 router.patch("/refresh", async (_req, res) => {
     const { user } = res.locals;
 
+    console.log(user)
+
     if (user.role != "admin") {
         res.status(403).send();
         return;

@@ -1,9 +1,13 @@
-import { cleanup, createSignedInClient } from "#sdk/utils/client.ts";
+import { client, signInClient, signOutClient } from "#sdk/utils/client.ts";
 
 Deno.test("Database refresh", async () => {
-    const client = await createSignedInClient("admin");
+    try {
+        await signInClient("admin");
+        await client.admin.refresh();
+    } catch (err) {
+        await signOutClient();
+        throw err;
+    }
 
-    await client.admin.refresh();
-
-    await cleanup(client);
+    await signOutClient();
 });
