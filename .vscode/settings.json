@@ -1,0 +1,9 @@
+{
+    "deno.enable": true,
+    "deno.codeLens.test": true,
+    "deno.codeLens.testArgs": [
+        "--allow-all",
+        "--no-check",
+        "--trace-leaks"
+    ]
+}

@@ -1,4 +1,4 @@
-import { client } from "#sdk/utils/client.ts";
+import { client } from "#src/utils/client.ts";
 import { assertEquals } from "@std/assert/equals";
 
 Deno.test("Get level by ID", async () => {

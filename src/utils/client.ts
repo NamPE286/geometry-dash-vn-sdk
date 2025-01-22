@@ -1,4 +1,4 @@
-import { Client } from "#sdk/mod.ts";
+import { Client } from "#src/mod.ts";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "#types/supabase.ts";
 import "jsr:@std/dotenv/load";

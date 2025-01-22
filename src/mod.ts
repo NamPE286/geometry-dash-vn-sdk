@@ -1,9 +1,9 @@
 import { createClient as _createClient } from "@supabase/supabase-js";
 import type { Database } from "#types/supabase.ts";
-import { User } from "#sdk/classes/user.ts";
+import { User } from "./classes/user.ts";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { Admin } from "#sdk/classes/admin.ts";
-import { Level } from "#sdk/classes/level.ts";
+import { Admin } from "#src/classes/admin.ts";
+import { Level } from "#src/classes/level.ts";
 
 /** Geometry Dash VN client class */
 export class Client {

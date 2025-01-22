@@ -1,4 +1,4 @@
-import { client, signInClient, signOutClient } from "#sdk/utils/client.ts";
+import { client, signInClient, signOutClient } from "#src/utils/client.ts";
 
 Deno.test("Database refresh", async () => {
     try {
