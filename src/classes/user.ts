@@ -59,6 +59,10 @@ export class User {
             body: JSON.stringify(obj),
         });
 
+        if (!(200 <= res.status && res.status < 300)) {
+            throw new Error("API error: " + String(res.status));
+        }
+
         await res.body?.cancel();
     }
 

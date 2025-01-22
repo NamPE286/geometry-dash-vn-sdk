@@ -1,4 +1,4 @@
-import { client } from "./utils/client.ts";
+import { client, server, signInClient, signOutClient } from "./utils/client.ts";
 import { assertEquals } from "@std/assert/equals";
 
 Deno.test("Get level by ID", async () => {
@@ -20,7 +20,7 @@ Deno.test("Get level by ID", async () => {
 Deno.test("Get level rating", async () => {
     const res = (await client.level.get(52374843)).getRating("demon");
 
-    assertEquals(JSON.parse(JSON.stringify(res)), {
+    assertEquals(res, {
         id: 52374843,
         list: "demon",
         rating: 3000,
@@ -30,4 +30,45 @@ Deno.test("Get level rating", async () => {
     const res1 = (await client.level.get(52374843)).getRating("nonExistence");
 
     assertEquals(res1, undefined);
+});
+
+Deno.test("Insert new level", async () => {
+    await signInClient("admin");
+
+    try {
+        await client.level.add({
+            id: 123,
+            name: "newlevel",
+            creator: "testcreator",
+            youtube_video_id: "test",
+        });
+
+        const { data } = await client.level.get(123);
+        data.created_at = "";
+
+        assertEquals(data, {
+            id: 123,
+            created_at: "",
+            name: "newlevel",
+            creator: "testcreator",
+            youtube_video_id: "test",
+            ratings: [],
+        });
+    } catch (err) {
+        await server
+            .from("levels")
+            .delete()
+            .eq("id", 123);
+
+        await signOutClient();
+
+        throw err;
+    }
+
+    await server
+        .from("levels")
+        .delete()
+        .eq("id", 123);
+
+    await signOutClient();
 });

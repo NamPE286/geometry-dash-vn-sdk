@@ -74,7 +74,7 @@ export type Database = {
         Insert: {
           created_at?: string
           creator: string
-          id?: number
+          id: number
           name: string
           youtube_video_id: string
         }

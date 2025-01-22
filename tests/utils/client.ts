@@ -9,13 +9,13 @@ export const client = new Client(
     Deno.env.get("API_URL")!,
 );
 
-const supabase = createClient<Database>(
+export const server = createClient<Database>(
     Deno.env.get("SUPABASE_API_URL")!,
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
 );
 
 export async function signInClient(role: string = "default") {
-    await supabase.auth.admin.createUser({
+    await server.auth.admin.createUser({
         email: "test@bitbucket.local",
         password: "123456",
         email_confirm: true,
@@ -26,7 +26,7 @@ export async function signInClient(role: string = "default") {
         password: "123456",
     });
 
-    await supabase
+    await server
         .from("users")
         .insert({ user_id: data.user?.id!, name: "test", role: role });
 
@@ -36,10 +36,10 @@ export async function signInClient(role: string = "default") {
 export async function signOutClient() {
     const { data } = await client.db.auth.getUser();
 
-    await supabase
+    await server
         .from("users")
         .delete()
         .eq("user_id", data.user!.id);
 
-    await supabase.auth.admin.deleteUser(data.user!.id);
+    await server.auth.admin.deleteUser(data.user!.id);
 }

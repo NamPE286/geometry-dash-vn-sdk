@@ -43,6 +43,24 @@ export class Level {
         return new LevelData(data);
     }
 
+    async add(data: TLevel["Insert"]): Promise<void> {
+        const res = await fetch(`${this.APIUrl}/level`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " +
+                    (await this.db.auth.getSession()).data.session?.access_token,
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!(200 <= res.status && res.status < 300)) {
+            throw new Error("API error: " + String(res.status));
+        }
+
+        await res.body?.cancel();
+    }
+
     constructor(_db: SupabaseClient<Database>, _APIUrl: string) {
         this.db = _db;
         this.APIUrl = _APIUrl;
