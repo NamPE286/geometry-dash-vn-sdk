@@ -9,7 +9,7 @@ export interface LevelData extends TLevelData {}
 export class LevelData {
     private ratingMap: Map<string, Tables<"level_rating">> | null = null;
 
-    getRating(list: string) {
+    getRating(list: string): Tables<"level_rating"> | undefined {
         if (this.ratingMap === null) {
             this.ratingMap = new Map<string, Tables<"level_rating">>();
 
