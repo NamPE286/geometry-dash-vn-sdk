@@ -9,12 +9,13 @@ export class Admin {
         const res = await fetch(`${this.APIUrl}/func/refresh`, {
             method: "PATCH",
             headers: {
-                Authorization: "Bearer " + (await this.db.auth.getSession()).data.session?.access_token,
+                Authorization: "Bearer " +
+                    (await this.db.auth.getSession()).data.session?.access_token,
             },
         });
 
         if (!(200 <= res.status && res.status < 300)) {
-            throw new Error(String(res.status));
+            throw new Error("API error: " + String(res.status));
         }
 
         await res.body?.cancel();

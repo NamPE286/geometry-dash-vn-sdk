@@ -42,7 +42,7 @@ export class User {
         });
 
         if (!(200 <= res.status && res.status < 300)) {
-            throw new Error(String(res.status));
+            throw new Error("API error: " + String(res.status));
         }
 
         await res.body?.cancel();
