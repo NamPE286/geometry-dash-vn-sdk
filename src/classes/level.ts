@@ -61,6 +61,14 @@ export class Level {
         }
     }
 
+    async update(data: TLevel["Update"]): Promise<void> {
+        // TODO
+    }
+
+    async delete(id: number): Promise<void> {
+        // TODO
+    }
+
     constructor(_db: SupabaseClient<Database>, _APIUrl: string) {
         this.db = _db;
         this.APIUrl = _APIUrl;

@@ -6,7 +6,7 @@ export class List {
     private db: SupabaseClient<Database>;
     private APIUrl: string;
 
-    async getLevels(list: string, range = { start: 0, end: 50 }) {
+    async getLevels(list: string, range = { start: 0, end: 50 }): Promise<LevelData[]> {
         const { data, error } = await this.db
             .from("level_rating")
             .select("*, levels(*, ratings:level_rating(*))")
@@ -15,7 +15,7 @@ export class List {
             .range(range.start, range.end);
 
         if (error) {
-            return error;
+            throw error;
         }
 
         const res: LevelData[] = [];
