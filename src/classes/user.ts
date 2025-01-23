@@ -5,9 +5,11 @@ type TUser = Database["public"]["Tables"]["users"];
 type TUserData = TUser["Row"];
 
 export class UserData {
+    private db: SupabaseClient<Database>;
     data: TUserData;
 
-    constructor(data: TUserData) {
+    constructor(db: SupabaseClient<Database>, data: TUserData) {
+        this.db = db;
         this.data = data;
     }
 }
@@ -27,7 +29,7 @@ export class User {
             throw error;
         }
 
-        return new UserData(data);
+        return new UserData(this.db, data);
     }
 
     async create(obj: TUser["Update"]): Promise<void> {
