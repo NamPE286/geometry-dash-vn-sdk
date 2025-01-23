@@ -44,7 +44,7 @@ export async function signOutClient() {
     await server.auth.admin.deleteUser(data.user!.id);
 }
 
-export async function setup(
+export async function setupTest(
     { signedIn = false, fn }: { signedIn?: boolean; fn: (client: Client) => Promise<void> },
 ) {
     if (signedIn) {

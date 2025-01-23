@@ -1,9 +1,9 @@
 import { assertEquals } from "jsr:@std/assert";
-import { setup, signOutClient } from "./utils/environment.ts";
+import { setupTest, signOutClient } from "./utils/environment.ts";
 import "jsr:@std/dotenv/load";
 import type { Client } from "#src/mod.ts";
 Deno.test("Insert new user", async () => {
-    await setup({
+    await setupTest({
         signedIn: false,
         fn: async (client: Client) => {
             try {
@@ -42,7 +42,7 @@ Deno.test("Insert new user", async () => {
 });
 
 Deno.test("Edit user by UID", async () => {
-    await setup({
+    await setupTest({
         signedIn: true,
         fn: async (client: Client) => {
             const { data } = await client.db.auth.getUser();
@@ -62,7 +62,7 @@ Deno.test("Edit user by UID", async () => {
 Deno.test(
     "Get user by UID",
     async () => {
-        await setup({
+        await setupTest({
             signedIn: false,
             fn: async (client: Client) => {
                 const { data } = await client.user.get("ded6b269-a856-4a49-a1ae-d8837d50e350");
