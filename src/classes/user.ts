@@ -1,14 +1,11 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "#src/types/supabase.ts";
-
-type TUser = Database["public"]["Tables"]["users"];
-type TUserData = TUser["Row"];
+import type { Database, Tables, TablesUpdate } from "#src/types/supabase.ts";
 
 export class UserData {
     private db: SupabaseClient<Database>;
-    data: TUserData;
+    data: Tables<"users">;
 
-    constructor(db: SupabaseClient<Database>, data: TUserData) {
+    constructor(db: SupabaseClient<Database>, data: Tables<"users">) {
         this.db = db;
         this.data = data;
     }
@@ -32,7 +29,7 @@ export class User {
         return new UserData(this.db, data);
     }
 
-    async create(obj: TUser["Update"]): Promise<void> {
+    async create(obj: TablesUpdate<"users">): Promise<void> {
         const res = await fetch(`${this.APIUrl}/user`, {
             method: "POST",
             headers: {
@@ -50,7 +47,7 @@ export class User {
         await res.body?.cancel();
     }
 
-    async update(obj: TUser["Update"]): Promise<void> {
+    async update(obj: TablesUpdate<"users">): Promise<void> {
         const res = await fetch(`${this.APIUrl}/user`, {
             method: "PATCH",
             headers: {

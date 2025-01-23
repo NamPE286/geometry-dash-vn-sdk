@@ -9,7 +9,7 @@ export class List {
     async getLevels(list: string, range = { start: 0, end: 50 }): Promise<LevelData[]> {
         const { data, error } = await this.db
             .from("level_rating")
-            .select("*, levels(*, ratings:level_rating(*))")
+            .select("*, levels(*, level_rating(*))")
             .eq("list", list)
             .order("rating", { ascending: false })
             .range(range.start, range.end);
@@ -21,7 +21,8 @@ export class List {
         const res: LevelData[] = [];
 
         for (const i of data) {
-            res.push(new LevelData(this.db, i.levels));
+            const { level_rating, ...level } = i.levels;
+            res.push(new LevelData(this.db, level, level_rating));
         }
 
         return res;

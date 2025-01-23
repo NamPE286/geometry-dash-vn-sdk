@@ -1,14 +1,11 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database, Tables } from "#src/types/supabase.ts";
-
-export type TLevel = Database["public"]["Tables"]["levels"];
-export type TLevelData = TLevel["Row"] & { ratings: Tables<"level_rating">[] };
+import type { Database, Tables, TablesInsert, TablesUpdate } from "#src/types/supabase.ts";
 
 export class LevelData {
     private db: SupabaseClient<Database>;
     private ratingMap = new Map<string, Tables<"level_rating">>();
     private recordMap = new Map<string, Tables<"records_view">>();
-    
+
     data: Tables<"levels">;
 
     getRating(list: string): Tables<"level_rating"> | undefined {
@@ -72,7 +69,7 @@ export class Level {
         return new LevelData(this.db, level, level_rating);
     }
 
-    async add(data: TLevel["Insert"]): Promise<void> {
+    async add(data: TablesInsert<"levels">): Promise<void> {
         const res = await fetch(`${this.APIUrl}/level`, {
             method: "POST",
             headers: {
@@ -90,7 +87,7 @@ export class Level {
         }
     }
 
-    async update(data: TLevel["Update"]): Promise<void> {
+    async update(data: TablesUpdate<"levels">): Promise<void> {
         // TODO
     }
 
