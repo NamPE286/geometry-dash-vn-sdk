@@ -76,11 +76,13 @@ export async function setupTest(
         await fn(client);
 
         assert(false, "Authentication bypassed");
-    } catch {
-        //
+    } catch (err) {
+        if (err instanceof Error && err.name == "AssertionError") {
+            throw err;
+        }
     }
 
-    if (role !== "default") {
+    if (role === "default") {
         return;
     }
 
@@ -90,8 +92,10 @@ export async function setupTest(
         await fn(client);
 
         assert(false, "User's role is not checked");
-    } catch {
-        //
+    } catch (err) {
+        if (err instanceof Error && err.name == "AssertionError") {
+            throw err;
+        }
     }
 
     await signOutClient();
