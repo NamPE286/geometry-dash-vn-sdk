@@ -8,7 +8,8 @@ export class LevelData {
     private db: SupabaseClient<Database>;
     private ratingMap = new Map<string, Tables<"level_rating">>();
     private recordMap = new Map<string, Tables<"records_view">>();
-    data: TLevelData;
+    
+    data: Tables<"levels">;
 
     getRating(list: string): Tables<"level_rating"> | undefined {
         return this.ratingMap.get(list);
@@ -34,13 +35,14 @@ export class LevelData {
 
     constructor(
         db: SupabaseClient<Database>,
-        data: TLevelData,
+        data: Tables<"levels">,
+        ratings: Tables<"level_rating">[] = [],
         records: Tables<"records_view">[] = [],
     ) {
         this.db = db;
         this.data = data;
 
-        for (const i of data.ratings) {
+        for (const i of ratings) {
             this.ratingMap.set(i.list, i);
         }
 
@@ -57,7 +59,7 @@ export class Level {
     async get(id: number): Promise<LevelData> {
         const { data, error } = await this.db
             .from("levels")
-            .select("*, ratings:level_rating(*)")
+            .select("*, level_rating(*)")
             .eq("id", id)
             .single();
 
@@ -65,7 +67,9 @@ export class Level {
             throw error;
         }
 
-        return new LevelData(this.db, data);
+        const { level_rating, ...level } = data;
+
+        return new LevelData(this.db, level, level_rating);
     }
 
     async add(data: TLevel["Insert"]): Promise<void> {

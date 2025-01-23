@@ -13,10 +13,6 @@ Deno.test("Get level by ID", async () => {
                 name: "Zodiac",
                 creator: "Bianox and more",
                 youtube_video_id: "FX9paD5rRsM",
-                ratings: [
-                    { id: 52374843, list: "demon", rating: 3000, min_progress: 60 },
-                    { id: 52374843, list: "featured", rating: 1000, min_progress: 100 },
-                ],
             });
         },
     });
@@ -63,7 +59,6 @@ Deno.test("Insert new level", async () => {
                     name: "newlevel",
                     creator: "testcreator",
                     youtube_video_id: "test",
-                    ratings: [],
                 });
             } catch (err) {
                 await server
