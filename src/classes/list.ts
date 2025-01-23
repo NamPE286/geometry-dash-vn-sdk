@@ -21,7 +21,7 @@ export class List {
         const res: LevelData[] = [];
 
         for (const i of data) {
-            res.push(new LevelData(i.levels));
+            res.push(new LevelData(this.db, i.levels));
         }
 
         return res;

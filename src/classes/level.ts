@@ -1,27 +1,52 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "#src/types/supabase.ts";
 
-type TLevel = Database["public"]["Tables"]["levels"];
-type TLevelData = TLevel["Row"] & { ratings: Tables<"level_rating">[] };
+export type TLevel = Database["public"]["Tables"]["levels"];
+export type TLevelData = TLevel["Row"] & { ratings: Tables<"level_rating">[] };
 
 export class LevelData {
+    private db: SupabaseClient<Database>;
+    private ratingMap = new Map<string, Tables<"level_rating">>();
+    private recordMap = new Map<string, Tables<"records_view">>();
     data: TLevelData;
-    private ratingMap: Map<string, Tables<"level_rating">> | null = null;
 
     getRating(list: string): Tables<"level_rating"> | undefined {
-        if (this.ratingMap === null) {
-            this.ratingMap = new Map<string, Tables<"level_rating">>();
-
-            for (const i of this.data.ratings) {
-                this.ratingMap.set(i.list, i);
-            }
-        }
-
         return this.ratingMap.get(list);
     }
 
-    constructor(data: TLevelData) {
+    async getRecord(userID: string): Promise<Tables<"records_view">> {
+        if (this.recordMap.has(userID)) {
+            return this.recordMap.get(userID)!;
+        }
+
+        const { data, error } = await this.db
+            .from("records_view")
+            .select("*")
+            .match({ level_id: this.data.id, user_id: userID })
+            .single();
+
+        if (error) {
+            throw error;
+        }
+
+        return data;
+    }
+
+    constructor(
+        db: SupabaseClient<Database>,
+        data: TLevelData,
+        records: Tables<"records_view">[] = [],
+    ) {
+        this.db = db;
         this.data = data;
+
+        for (const i of data.ratings) {
+            this.ratingMap.set(i.list, i);
+        }
+
+        for (const i of records) {
+            this.recordMap.set(i.user_id!, i);
+        }
     }
 }
 
@@ -40,7 +65,7 @@ export class Level {
             throw error;
         }
 
-        return new LevelData(data);
+        return new LevelData(this.db, data);
     }
 
     async add(data: TLevel["Insert"]): Promise<void> {
