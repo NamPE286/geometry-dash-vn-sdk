@@ -1,5 +1,3 @@
-import { assert } from "@std/assert/assert";
-
 Deno.test("Publish to JSR", async () => {
     const command = new Deno.Command("deno", {
         args: [
@@ -12,6 +10,8 @@ Deno.test("Publish to JSR", async () => {
     // create subprocess and collect output
     const { code, stderr } = await command.output();
 
-    console.log(new TextDecoder().decode(stderr));
-    assert(code === 0, "Failed to publish package");
+    if (code !== 0) {
+        console.error(new TextDecoder().decode(stderr));
+        throw new Error("Failed to publish package");
+    }
 });
