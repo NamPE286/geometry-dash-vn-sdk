@@ -5,7 +5,6 @@ import type { Client } from "#src/mod.ts";
 
 Deno.test("Insert new user", async () => {
     await setupTest({
-        signedIn: false,
         fn: async (client: Client) => {
             try {
                 const { data, error } = await client.db.auth.signUp({
@@ -62,7 +61,6 @@ Deno.test("Edit user by UID", async () => {
 
 Deno.test("Get user by UID", async () => {
     await setupTest({
-        signedIn: false,
         fn: async (client: Client) => {
             const { data } = await client.user.get("ded6b269-a856-4a49-a1ae-d8837d50e350");
 
