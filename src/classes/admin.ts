@@ -14,11 +14,11 @@ export class Admin {
             },
         });
 
+        await res.body?.cancel();
+
         if (!(200 <= res.status && res.status < 300)) {
             throw new Error("API error: " + String(res.status));
         }
-
-        await res.body?.cancel();
     }
 
     constructor(_db: SupabaseClient<Database>, _APIUrl: string) {

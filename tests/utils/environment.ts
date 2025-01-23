@@ -2,6 +2,7 @@ import { Client } from "#src/mod.ts";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "#src/types/supabase.ts";
 import "jsr:@std/dotenv/load";
+import { assert } from "@std/assert/assert";
 
 export const client = new Client(
     Deno.env.get("SUPABASE_API_URL")!,
@@ -65,7 +66,33 @@ export async function setupTest(
         throw err;
     }
 
-    if (signedIn) {
-        await signOutClient();
+    if (!signedIn) {
+        return;
     }
+
+    await signOutClient();
+
+    try {
+        await fn(client);
+
+        assert(false, "Authentication bypassed");
+    } catch {
+        //
+    }
+
+    if (role !== "default") {
+        return;
+    }
+
+    await signInClient("default");
+
+    try {
+        await fn(client);
+
+        assert(false, "User's role is not checked");
+    } catch {
+        //
+    }
+
+    await signOutClient();
 }
