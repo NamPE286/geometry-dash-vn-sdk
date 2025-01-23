@@ -2,6 +2,7 @@ import { assertEquals } from "jsr:@std/assert";
 import { setupTest, signOutClient } from "./utils/environment.ts";
 import "jsr:@std/dotenv/load";
 import type { Client } from "#src/mod.ts";
+
 Deno.test("Insert new user", async () => {
     await setupTest({
         signedIn: false,
@@ -59,24 +60,21 @@ Deno.test("Edit user by UID", async () => {
     });
 });
 
-Deno.test(
-    "Get user by UID",
-    async () => {
-        await setupTest({
-            signedIn: false,
-            fn: async (client: Client) => {
-                const { data } = await client.user.get("ded6b269-a856-4a49-a1ae-d8837d50e350");
+Deno.test("Get user by UID", async () => {
+    await setupTest({
+        signedIn: false,
+        fn: async (client: Client) => {
+            const { data } = await client.user.get("ded6b269-a856-4a49-a1ae-d8837d50e350");
 
-                assertEquals(data, {
-                    user_id: "ded6b269-a856-4a49-a1ae-d8837d50e350",
-                    created_at: "2025-01-18T09:56:19.965229+00:00",
-                    name: "default",
-                    city: "Hạ Long",
-                    province: "Quảng Ninh",
-                    role: "default",
-                    is_hidden: false,
-                });
-            },
-        });
-    },
-);
+            assertEquals(data, {
+                user_id: "ded6b269-a856-4a49-a1ae-d8837d50e350",
+                created_at: "2025-01-18T09:56:19.965229+00:00",
+                name: "default",
+                city: "Hạ Long",
+                province: "Quảng Ninh",
+                role: "default",
+                is_hidden: false,
+            });
+        },
+    });
+});

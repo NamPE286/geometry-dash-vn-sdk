@@ -45,10 +45,14 @@ export async function signOutClient() {
 }
 
 export async function setupTest(
-    { signedIn = false, fn }: { signedIn?: boolean; fn: (client: Client) => Promise<void> },
+    { signedIn = false, role = "default", fn }: {
+        signedIn?: boolean;
+        role?: string;
+        fn: (client: Client) => Promise<void>;
+    },
 ) {
     if (signedIn) {
-        await signInClient();
+        await signInClient(role);
     }
 
     try {
