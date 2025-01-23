@@ -6,7 +6,7 @@ import type { Tables } from "#src/types/supabase.ts";
 Deno.test("Get list", async () => {
     await setupTest({
         fn: async (client: Client) => {
-            const list = await client.list.getLevels("demon", { start: 0, end: 1 });
+            const list = await client.list.getLevels("demon", { range: { start: 0, end: 1 } });
             const res: Tables<"levels">[] = [];
 
             for (const i of list) {
