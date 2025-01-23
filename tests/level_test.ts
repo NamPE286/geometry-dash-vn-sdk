@@ -1,4 +1,4 @@
-import { client, server, setupTest, signInClient, signOutClient } from "./utils/environment.ts";
+import { server, setupTest } from "./utils/environment.ts";
 import { assertEquals } from "@std/assert/equals";
 import type { Client } from "#src/mod.ts";
 
@@ -23,57 +23,61 @@ Deno.test("Get level by ID", async () => {
 });
 
 Deno.test("Get level rating", async () => {
-    const res = (await client.level.get(52374843)).getRating("demon");
+    await setupTest({
+        fn: async (client: Client) => {
+            const res = (await client.level.get(52374843)).getRating("demon");
 
-    assertEquals(res, {
-        id: 52374843,
-        list: "demon",
-        rating: 3000,
-        min_progress: 60,
+            assertEquals(res, {
+                id: 52374843,
+                list: "demon",
+                rating: 3000,
+                min_progress: 60,
+            });
+
+            const res1 = (await client.level.get(52374843)).getRating("nonExistence");
+
+            assertEquals(res1, undefined);
+        },
     });
-
-    const res1 = (await client.level.get(52374843)).getRating("nonExistence");
-
-    assertEquals(res1, undefined);
 });
 
 Deno.test("Insert new level", async () => {
-    await signInClient("admin");
+    await setupTest({
+        signedIn: true,
+        role: "admin",
+        fn: async (client: Client) => {
+            try {
+                await client.level.add({
+                    id: 123,
+                    name: "newlevel",
+                    creator: "testcreator",
+                    youtube_video_id: "test",
+                });
 
-    try {
-        await client.level.add({
-            id: 123,
-            name: "newlevel",
-            creator: "testcreator",
-            youtube_video_id: "test",
-        });
+                const { data } = await client.level.get(123);
+                data.created_at = "";
 
-        const { data } = await client.level.get(123);
-        data.created_at = "";
+                assertEquals(data, {
+                    id: 123,
+                    created_at: "",
+                    name: "newlevel",
+                    creator: "testcreator",
+                    youtube_video_id: "test",
+                    ratings: [],
+                });
+            } catch (err) {
+                await server
+                    .from("levels")
+                    .delete()
+                    .eq("id", 123);
 
-        assertEquals(data, {
-            id: 123,
-            created_at: "",
-            name: "newlevel",
-            creator: "testcreator",
-            youtube_video_id: "test",
-            ratings: [],
-        });
-    } catch (err) {
-        await server
-            .from("levels")
-            .delete()
-            .eq("id", 123);
+                throw err;
+            }
 
-        await signOutClient();
-
-        throw err;
-    }
-
-    await server
-        .from("levels")
-        .delete()
-        .eq("id", 123);
-
-    await signOutClient();
+            await server
+                .from("levels")
+                .delete()
+                .eq("id", 123);
+        },
+    });
 });
