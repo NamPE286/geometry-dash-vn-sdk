@@ -8,7 +8,13 @@ export class List {
 
     async getLevels(
         list: string,
-        { range = { start: 0, end: 50 }, userID = "" },
+        {
+            range = { start: 0, end: 50 },
+            userID = "",
+        }: {
+            range?: { start: number; end: number };
+            userID?: string;
+        },
     ): Promise<LevelData[]> {
         const { data, error } = await this.db
             .from("level_rating")
