@@ -1,6 +1,6 @@
 {
     "name": "@nampe286/geometry-dash-vn-sdk",
-    "version": "0.0.11",
+    "version": "0.0.12",
     "license": "GPL-v3",
     "exports": "./src/mod.ts",
     "imports": {
@@ -12,5 +12,12 @@
     "fmt": {
         "indentWidth": 4,
         "lineWidth": 100
+    },
+    "publish": {
+        "include": [
+            "LICENSE.txt",
+            "README.md",
+            "src/**/*.ts"
+        ]
     }
 }

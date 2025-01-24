@@ -41,8 +41,29 @@ Deno.test("Get level's records", async () => {
     await setupTest({
         fn: async (client: Client) => {
             const level = await client.level.get(52374843);
+            const records = await level.getRecords({ range: { start: 0, end: 1 } });
 
-            console.log(await level.getRecords({ range: { start: 0, end: 1 } }));
+            assertEquals(records, [
+                {
+                    user_id: "fa49b543-083c-4577-958f-ca86a8e295bd",
+                    level_id: 52374843,
+                    video_link: "https://www.youtube.com/watch?v=7GJOBkIgWHc",
+                    progress: 100,
+                    list: "demon",
+                    point: 3000,
+                    no: 1,
+                },
+                {
+                    user_id: "ded6b269-a856-4a49-a1ae-d8837d50e350",
+                    level_id: 52374843,
+                    video_link:
+                        "https://www.youtube.com/watch?v=uCuSX3Y004E&pp=ygUKcHJpcyBtYWdpYw%3D%3D",
+                    progress: 87,
+                    list: "demon",
+                    point: 1740,
+                    no: 2,
+                },
+            ]);
         },
     });
 });
