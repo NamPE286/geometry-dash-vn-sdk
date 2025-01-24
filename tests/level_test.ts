@@ -68,6 +68,26 @@ Deno.test("Get level's records", async () => {
     });
 });
 
+Deno.test("Get level's record by user id", async () => {
+    await setupTest({
+        fn: async (client: Client) => {
+            const level = await client.level.get(52374843);
+            const record = await level.getRecord("demon", "ded6b269-a856-4a49-a1ae-d8837d50e350");
+
+            assertEquals(record, {
+                user_id: "ded6b269-a856-4a49-a1ae-d8837d50e350",
+                level_id: 52374843,
+                video_link:
+                    "https://www.youtube.com/watch?v=uCuSX3Y004E&pp=ygUKcHJpcyBtYWdpYw%3D%3D",
+                progress: 87,
+                list: "demon",
+                point: 1740,
+                no: 2,
+            });
+        },
+    });
+});
+
 Deno.test("Insert new level", async () => {
     await setupTest({
         signedIn: true,

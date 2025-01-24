@@ -4,7 +4,7 @@ import type { Database, Tables, TablesInsert, TablesUpdate } from "#src/types/su
 export class LevelData {
     private db: SupabaseClient<Database>;
     private ratingMap = new Map<string, Tables<"level_rating">>();
-    private recordMap = new Map<string, Tables<"records_view">>();
+    private recordMap = new Map<[string, string], Tables<"records_view">>();
 
     data: Tables<"levels">;
 
@@ -20,7 +20,7 @@ export class LevelData {
         range?: { start: number; end: number };
         list?: string;
         ascending?: boolean;
-    }): Promise<Tables<"records_view">[]> {
+    } = {}): Promise<Tables<"records_view">[]> {
         const { data, error } = await this.db
             .from("records_view")
             .select("*")
@@ -35,7 +35,25 @@ export class LevelData {
         this.recordMap.clear();
 
         for (const i of data) {
-            this.recordMap.set(i.user_id!, i);
+            this.recordMap.set([i.list!, i.user_id!], i);
+        }
+
+        return data;
+    }
+
+    async getRecord(list: string, userID: string): Promise<Tables<"records_view">> {
+        if (this.recordMap.has([list, userID])) {
+            return this.recordMap.get([list, userID])!;
+        }
+
+        const { data, error } = await this.db
+            .from("records_view")
+            .select("*")
+            .match({ level_id: this.data.id, user_id: userID, list: list })
+            .single();
+
+        if (error) {
+            throw error;
         }
 
         return data;
@@ -55,7 +73,7 @@ export class LevelData {
         }
 
         for (const i of records) {
-            this.recordMap.set(i.user_id!, i);
+            this.recordMap.set([i.list!, i.user_id!], i);
         }
     }
 }
