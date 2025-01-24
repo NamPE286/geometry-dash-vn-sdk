@@ -10,7 +10,7 @@ export class List {
         list: string,
         {
             range = { start: 0, end: 50 },
-            userID = "",
+            userID = "00000000-0000-0000-0000-000000000000",
         }: {
             range?: { start: number; end: number };
             userID?: string;
@@ -18,8 +18,10 @@ export class List {
     ): Promise<LevelData[]> {
         const { data, error } = await this.db
             .from("level_rating")
-            .select("*, levels(*, level_rating(*))")
+            .select("*, levels(*, level_rating(*), records_view(*))")
             .eq("list", list)
+            .eq("levels.records_view.list", list)
+            .eq("levels.records_view.user_id", userID)
             .order("rating", { ascending: false })
             .range(range.start, range.end);
 
@@ -30,8 +32,8 @@ export class List {
         const res: LevelData[] = [];
 
         for (const i of data) {
-            const { level_rating, ...level } = i.levels;
-            res.push(new LevelData(this.db, level, level_rating));
+            const { level_rating, records_view, ...level } = i.levels;
+            res.push(new LevelData(this.db, level, level_rating, records_view));
         }
 
         return res;
