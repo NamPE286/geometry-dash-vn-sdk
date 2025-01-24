@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "deno",
+            "command": "test",
+            "args": [
+                "--allow-all",
+                "--trace-leaks"
+            ],
+            "problemMatcher": [
+                "$deno-test"
+            ],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "label": "deno: test"
+        }
+    ]
+}
