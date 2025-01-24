@@ -5,9 +5,9 @@ import type { Client } from "#src/mod.ts";
 Deno.test("Get level by ID", async () => {
     await setupTest({
         fn: async (client: Client) => {
-            const { data } = await client.level.get(52374843);
+            const level = await client.level.get(52374843);
 
-            assertEquals(data, {
+            assertEquals(level.data, {
                 id: 52374843,
                 created_at: "2025-01-19T18:16:01.572288+00:00",
                 name: "Zodiac",
@@ -18,7 +18,7 @@ Deno.test("Get level by ID", async () => {
     });
 });
 
-Deno.test("Get level rating", async () => {
+Deno.test("Get level's rating", async () => {
     await setupTest({
         fn: async (client: Client) => {
             const res = (await client.level.get(52374843)).getRating("demon");
@@ -33,6 +33,16 @@ Deno.test("Get level rating", async () => {
             const res1 = (await client.level.get(52374843)).getRating("nonExistence");
 
             assertEquals(res1, undefined);
+        },
+    });
+});
+
+Deno.test("Get level's records", async () => {
+    await setupTest({
+        fn: async (client: Client) => {
+            const level = await client.level.get(52374843);
+
+            console.log(await level.getRecords({ range: { start: 0, end: 1 } }));
         },
     });
 });

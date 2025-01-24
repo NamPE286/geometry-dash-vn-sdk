@@ -12,19 +12,30 @@ export class LevelData {
         return this.ratingMap.get(list);
     }
 
-    async getRecord(userID: string): Promise<Tables<"records_view">> {
-        if (this.recordMap.has(userID)) {
-            return this.recordMap.get(userID)!;
-        }
-
+    async getRecords({
+        range = { start: 0, end: 50 },
+        list = "demon",
+        ascending = false,
+    }: {
+        range?: { start: number; end: number };
+        list?: string;
+        ascending?: boolean;
+    }): Promise<Tables<"records_view">[]> {
         const { data, error } = await this.db
             .from("records_view")
             .select("*")
-            .match({ level_id: this.data.id, user_id: userID })
-            .single();
+            .match({ level_id: this.data.id, list: list })
+            .order("point", { ascending: ascending })
+            .range(range.start, range.end);
 
         if (error) {
             throw error;
+        }
+
+        this.recordMap.clear();
+
+        for (const i of data) {
+            this.recordMap.set(i.user_id!, i);
         }
 
         return data;
