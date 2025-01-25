@@ -52,6 +52,7 @@ Deno.test("Get level's records", async () => {
                     list: "demon",
                     point: 3000,
                     no: 1,
+                    exp: 3000
                 },
                 {
                     user_id: "ded6b269-a856-4a49-a1ae-d8837d50e350",
@@ -62,6 +63,7 @@ Deno.test("Get level's records", async () => {
                     list: "demon",
                     point: 1740,
                     no: 2,
+                    exp: 1740
                 },
             ]);
         },
@@ -83,6 +85,7 @@ Deno.test("Get level's record by user id", async () => {
                 list: "demon",
                 point: 1740,
                 no: 2,
+                exp: 1740
             });
         },
     });

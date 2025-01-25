@@ -34,6 +34,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      level_creator: {
+        Row: {
+          level_id: number
+          user_id: string
+        }
+        Insert: {
+          level_id: number
+          user_id?: string
+        }
+        Update: {
+          level_id?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "level_creator_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "levels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "level_creator_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       level_rating: {
         Row: {
           id: number
@@ -226,6 +256,7 @@ export type Database = {
     Views: {
       records_view: {
         Row: {
+          exp: number | null
           level_id: number | null
           list: string | null
           no: number | null
