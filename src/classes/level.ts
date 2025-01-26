@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables, TablesInsert, TablesUpdate } from "#src/types/supabase.ts";
+import { UserData } from "#src/classes/user.ts";
 
 export class LevelData {
     private db: SupabaseClient<Database>;
@@ -7,6 +8,7 @@ export class LevelData {
     private recordMap = new Map<string, Tables<"records_view">>();
 
     data: Tables<"levels">;
+    creators: (Tables<"level_creator"> & { user: UserData })[] = [];
 
     async getRating(list: string): Promise<Tables<"level_rating">> {
         if (this.ratingMap.has(list)) {
@@ -79,6 +81,7 @@ export class LevelData {
     constructor(
         db: SupabaseClient<Database>,
         data: Tables<"levels">,
+        creators: (Tables<"level_creator"> & { data: Tables<"users"> })[],
         ratings: Tables<"level_rating">[] = [],
         records: Tables<"records_view">[] = [],
     ) {
@@ -92,6 +95,11 @@ export class LevelData {
         for (const i of records) {
             this.recordMap.set(JSON.stringify([i.list!, i.user_id!]), i);
         }
+
+        for (const i of creators) {
+            const { data, ...creator } = i;
+            this.creators.push({ ...creator, user: new UserData(db, data) });
+        }
     }
 }
 
@@ -102,7 +110,7 @@ export class Level {
     async get(id: number): Promise<LevelData> {
         const { data, error } = await this.db
             .from("levels")
-            .select("*, level_rating(*)")
+            .select("*, level_rating(*), level_creator(*, data:users(*))")
             .eq("id", id)
             .single();
 
@@ -110,9 +118,9 @@ export class Level {
             throw error;
         }
 
-        const { level_rating, ...level } = data;
+        const { level_rating, level_creator, ...level } = data;
 
-        return new LevelData(this.db, level, level_rating);
+        return new LevelData(this.db, level, level_creator, level_rating);
     }
 
     async add(data: TablesInsert<"levels">): Promise<void> {
