@@ -12,7 +12,7 @@ Deno.test("Get level by ID", async () => {
                 id: 52374843,
                 created_at: "2025-01-19T18:16:01.572288+00:00",
                 name: "Zodiac",
-                creator: "Bianox and more",
+                creator_alt: "Bianox and more",
                 youtube_video_id: "FX9paD5rRsM",
             });
         },
@@ -115,7 +115,7 @@ Deno.test("Insert new level", async () => {
                 await client.level.add({
                     id: 123,
                     name: "newlevel",
-                    creator: "testcreator",
+                    creator_alt: "testcreator",
                     youtube_video_id: "test",
                 });
 
@@ -126,7 +126,7 @@ Deno.test("Insert new level", async () => {
                     id: 123,
                     created_at: "",
                     name: "newlevel",
-                    creator: "testcreator",
+                    creator_alt: "testcreator",
                     youtube_video_id: "test",
                 });
             } catch (err) {
@@ -154,7 +154,7 @@ Deno.test("Edit level", async () => {
             await client.level.add({
                 id: 123,
                 name: "newlevel",
-                creator: "testcreator",
+                creator_alt: "testcreator",
                 youtube_video_id: "test",
             });
 
@@ -192,7 +192,7 @@ Deno.test("Delete level", async () => {
             await client.level.add({
                 id: 123,
                 name: "newlevel",
-                creator: "testcreator",
+                creator_alt: "testcreator",
                 youtube_video_id: "test",
             });
 

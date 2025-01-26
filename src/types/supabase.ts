@@ -115,21 +115,21 @@ export type Database = {
       levels: {
         Row: {
           created_at: string
-          creator: string
+          creator_alt: string
           id: number
           name: string
           youtube_video_id: string
         }
         Insert: {
           created_at?: string
-          creator: string
+          creator_alt: string
           id: number
           name: string
           youtube_video_id: string
         }
         Update: {
           created_at?: string
-          creator?: string
+          creator_alt?: string
           id?: number
           name?: string
           youtube_video_id?: string
