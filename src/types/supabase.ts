@@ -36,15 +36,27 @@ export type Database = {
     Tables: {
       level_creator: {
         Row: {
+          is_decorator: boolean
+          is_gameplay_maker: boolean
           level_id: number
+          part_end: number
+          part_start: number
           user_id: string
         }
         Insert: {
+          is_decorator?: boolean
+          is_gameplay_maker?: boolean
           level_id: number
+          part_end?: number
+          part_start?: number
           user_id?: string
         }
         Update: {
+          is_decorator?: boolean
+          is_gameplay_maker?: boolean
           level_id?: number
+          part_end?: number
+          part_start?: number
           user_id?: string
         }
         Relationships: [
