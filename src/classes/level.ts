@@ -4,15 +4,10 @@ import { UserData } from "#src/classes/user.ts";
 import { Cache } from "#src/utils/cache.ts";
 
 export class LevelRating {
-    private cache = new Cache<[string], Tables<"level_rating">>();
-    public data: Tables<"level_rating">[];
-
-    get(list: string): Tables<"level_rating"> | undefined {
-        return this.cache.get(list);
-    }
+    public cache = new Cache<[string], Tables<"level_rating">>();
 
     constructor(data: Tables<"level_rating">[] = []) {
-        this.data = data;
+        this.cache.data = data;
 
         for (const i of data) {
             this.cache.set([i.list], i);
