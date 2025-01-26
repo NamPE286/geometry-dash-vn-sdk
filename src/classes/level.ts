@@ -2,6 +2,53 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables, TablesInsert, TablesUpdate } from "#src/types/supabase.ts";
 import { UserData } from "#src/classes/user.ts";
 
+export class LevelRating {
+    private db: SupabaseClient<Database>;
+    private id: number;
+
+    public cache = new Map<string, Tables<"level_rating">>();
+
+    /**
+     * Update cache and get level's list rating
+     * @param list Name of the list
+     * @returns Level's list rating
+     */
+    async fetch(list: string | null = null): Promise<Tables<"level_rating"> | undefined> {
+        const { data, error } = await this.db
+            .from("level_rating")
+            .select("*")
+            .match({ id: this.id });
+
+        if (error) {
+            throw error;
+        }
+
+        for (const i of data) {
+            this.cache.set(i.list, i);
+        }
+
+        if (list === null) {
+            return undefined;
+        }
+
+        return this.cache.get(list);
+    }
+
+    /**
+     * @param db Supabase client
+     * @param levelID ID of the level
+     * @param cache Data to preload with
+     */
+    constructor(db: SupabaseClient<Database>, levelID: number, cache: Tables<"level_rating">[] = []) {
+        this.db = db;
+        this.id = levelID;
+
+        for (const i of cache) {
+            this.cache.set(i.list, i);
+        }
+    }
+}
+
 export class LevelData {
     private db: SupabaseClient<Database>;
     private ratingMap = new Map<string, Tables<"level_rating">>();
