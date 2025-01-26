@@ -2,7 +2,6 @@ import { server, setupTest } from "./utils/environment.ts";
 import { assertEquals } from "@std/assert/equals";
 import type { Client } from "#src/mod.ts";
 import { assert } from "@std/assert/assert";
-import { PostgrestError } from "@supabase/supabase-js";
 
 Deno.test("Get level by ID", async () => {
     await setupTest({
