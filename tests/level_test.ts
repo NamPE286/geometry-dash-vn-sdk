@@ -50,13 +50,13 @@ Deno.test("Get level's rating", async () => {
         fn: async (client: Client) => {
             const level = await client.levels.fetch(52374843);
 
-            assertEquals(level.rating.cache.get("demon"), {
+            assertEquals(level.rating.get("demon"), {
                 id: 52374843,
                 list: "demon",
                 rating: 3500,
                 min_progress: 60,
             });
-            assertEquals(level.rating.cache.get("nonExistence"), undefined);
+            assertEquals(level.rating.get("nonExistence"), undefined);
         },
     });
 });
