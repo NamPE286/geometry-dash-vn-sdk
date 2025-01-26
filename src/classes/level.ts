@@ -94,6 +94,47 @@ export class LevelCreator {
     }
 }
 
+export class LevelRecord {
+    private db: SupabaseClient<Database>;
+    private id: number;
+
+    public cache: Tables<"records_view">[];
+
+    /**
+     * Update and return cache
+     * @returns Level's list rating
+     */
+    async fetch(): Promise<Tables<"records_view">[]> {
+        const { data, error } = await this.db
+            .from("records_view")
+            .select("*")
+            .eq("level_id", this.id);
+
+        if (error) {
+            throw error;
+        }
+
+        this.cache = data;
+
+        return this.cache;
+    }
+
+    /**
+     * @param db Supabase client
+     * @param levelID ID of the level
+     * @param cache Data to preload cache with
+     */
+    constructor(
+        db: SupabaseClient<Database>,
+        levelID: number,
+        cache: Tables<"records_view">[] = [],
+    ) {
+        this.db = db;
+        this.id = levelID;
+        this.cache = cache;
+    }
+}
+
 export class LevelData {
     private db: SupabaseClient<Database>;
     private ratingMap = new Map<string, Tables<"level_rating">>();
