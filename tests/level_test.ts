@@ -145,3 +145,75 @@ Deno.test("Insert new level", async () => {
         },
     });
 });
+
+Deno.test("Edit level", async () => {
+    await setupTest({
+        signedIn: true,
+        role: "admin",
+        fn: async (client: Client) => {
+            await client.level.add({
+                id: 123,
+                name: "newlevel",
+                creator: "testcreator",
+                youtube_video_id: "test",
+            });
+
+            try {
+                await client.level.update({
+                    id: 123,
+                    name: "newlevel123",
+                });
+
+                const { data } = await client.level.get(123);
+
+                assertEquals(data.name, "newlevel123");
+            } catch (err) {
+                await server
+                    .from("levels")
+                    .delete()
+                    .eq("id", 123);
+
+                throw err;
+            }
+
+            await server
+                .from("levels")
+                .delete()
+                .eq("id", 123);
+        },
+    });
+});
+
+Deno.test("Delete level", async () => {
+    await setupTest({
+        signedIn: true,
+        role: "admin",
+        fn: async (client: Client) => {
+            await client.level.add({
+                id: 123,
+                name: "newlevel",
+                creator: "testcreator",
+                youtube_video_id: "test",
+            });
+
+            try {
+                await client.level.delete(123);
+            } catch (err) {
+                await server
+                    .from("levels")
+                    .delete()
+                    .eq("id", 123);
+
+                throw err;
+            }
+
+            try {
+                await client.level.get(123);
+            } catch {
+                return;
+            }
+
+            assert(false);
+        },
+    });
+});
