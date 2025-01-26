@@ -134,11 +134,37 @@ export class Level {
     }
 
     async update(data: TablesUpdate<"levels">): Promise<void> {
-        // TODO
+        const res = await fetch(`${this.APIUrl}/level`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " +
+                    (await this.db.auth.getSession()).data.session?.access_token,
+            },
+            body: JSON.stringify(data),
+        });
+
+        await res.body?.cancel();
+
+        if (!(200 <= res.status && res.status < 300)) {
+            throw new Error("API error: " + String(res.status));
+        }
     }
 
     async delete(id: number): Promise<void> {
-        // TODO
+        const res = await fetch(`${this.APIUrl}/level/${id}`, {
+            method: "DELETE",
+            headers: {
+                Authorization: "Bearer " +
+                    (await this.db.auth.getSession()).data.session?.access_token,
+            },
+        });
+
+        await res.body?.cancel();
+
+        if (!(200 <= res.status && res.status < 300)) {
+            throw new Error("API error: " + String(res.status));
+        }
     }
 
     constructor(_db: SupabaseClient<Database>, _APIUrl: string) {
