@@ -16,9 +16,9 @@ Deno.test("Insert new user", async () => {
                     throw error;
                 }
 
-                await client.user.create({ name: "newuser" });
+                await client.users.create({ name: "newuser" });
 
-                const { data: user } = await client.user.get(data.user?.id!);
+                const { data: user } = await client.users.get(data.user?.id!);
                 user.created_at = "";
 
                 assertEquals(user, {
@@ -47,12 +47,12 @@ Deno.test("Edit user by UID", async () => {
         fn: async (client: Client) => {
             const { data } = await client.db.auth.getUser();
 
-            await client.user.update({
+            await client.users.update({
                 user_id: data.user?.id,
                 name: "test123",
             });
 
-            const { data: user } = await client.user.get(data.user?.id!);
+            const { data: user } = await client.users.get(data.user?.id!);
 
             assertEquals(user.name, "test123");
         },
@@ -62,7 +62,7 @@ Deno.test("Edit user by UID", async () => {
 Deno.test("Get user by UID", async () => {
     await setupTest({
         fn: async (client: Client) => {
-            const { data } = await client.user.get("ded6b269-a856-4a49-a1ae-d8837d50e350");
+            const { data } = await client.users.get("ded6b269-a856-4a49-a1ae-d8837d50e350");
 
             assertEquals(data, {
                 user_id: "ded6b269-a856-4a49-a1ae-d8837d50e350",

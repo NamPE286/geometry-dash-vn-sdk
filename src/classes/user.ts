@@ -11,7 +11,7 @@ export class UserData {
     }
 }
 
-export class User {
+export class Users {
     private db: SupabaseClient<Database>;
     private APIUrl: string;
 

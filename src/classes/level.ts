@@ -96,7 +96,7 @@ export class LevelData {
     }
 }
 
-export class Level {
+export class Levels {
     private db: SupabaseClient<Database>;
     private APIUrl: string;
 

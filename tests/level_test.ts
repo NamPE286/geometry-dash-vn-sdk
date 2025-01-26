@@ -7,7 +7,7 @@ import type { Tables } from "#src/types/supabase.ts";
 Deno.test("Get level by ID", async () => {
     await setupTest({
         fn: async (client: Client) => {
-            const level = await client.level.fetch(52374843);
+            const level = await client.levels.fetch(52374843);
 
             assertEquals(level.data, {
                 id: 52374843,
@@ -23,7 +23,7 @@ Deno.test("Get level by ID", async () => {
 Deno.test("Get level's creator", async () => {
     await setupTest({
         fn: async (client: Client) => {
-            const level = await client.level.fetch(79484035);
+            const level = await client.levels.fetch(79484035);
             const res: Tables<"users">[] = [];
 
             for (const i of level.creators) {
@@ -48,7 +48,7 @@ Deno.test("Get level's creator", async () => {
 Deno.test("Get level's rating", async () => {
     await setupTest({
         fn: async (client: Client) => {
-            const level = await client.level.fetch(52374843);
+            const level = await client.levels.fetch(52374843);
 
             assertEquals(level.rating.cache.get("demon"), {
                 id: 52374843,
@@ -64,7 +64,7 @@ Deno.test("Get level's rating", async () => {
 Deno.test("Get level's records", async () => {
     await setupTest({
         fn: async (client: Client) => {
-            const level = await client.level.fetch(52374843);
+            const level = await client.levels.fetch(52374843);
             const records = await level.getRecords({ range: { start: 0, end: 1 } });
 
             for (const i of records) {
@@ -101,7 +101,7 @@ Deno.test("Get level's records", async () => {
 Deno.test("Get level's record by user id", async () => {
     await setupTest({
         fn: async (client: Client) => {
-            const level = await client.level.fetch(52374843);
+            const level = await client.levels.fetch(52374843);
             const record = await level.getRecord("demon", "ded6b269-a856-4a49-a1ae-d8837d50e350");
 
             record.point = record.exp = record.no = 0;
@@ -127,14 +127,14 @@ Deno.test("Insert new level", async () => {
         role: "admin",
         fn: async (client: Client) => {
             try {
-                await client.level.add({
+                await client.levels.add({
                     id: 123,
                     name: "newlevel",
                     creator_alt: "testcreator",
                     youtube_video_id: "test",
                 });
 
-                const { data } = await client.level.fetch(123);
+                const { data } = await client.levels.fetch(123);
                 data.created_at = "";
 
                 assertEquals(data, {
@@ -166,7 +166,7 @@ Deno.test("Edit level", async () => {
         signedIn: true,
         role: "admin",
         fn: async (client: Client) => {
-            await client.level.add({
+            await client.levels.add({
                 id: 123,
                 name: "newlevel",
                 creator_alt: "testcreator",
@@ -174,12 +174,12 @@ Deno.test("Edit level", async () => {
             });
 
             try {
-                await client.level.update({
+                await client.levels.update({
                     id: 123,
                     name: "newlevel123",
                 });
 
-                const { data } = await client.level.fetch(123);
+                const { data } = await client.levels.fetch(123);
 
                 assertEquals(data.name, "newlevel123");
             } catch (err) {
@@ -204,7 +204,7 @@ Deno.test("Delete level", async () => {
         signedIn: true,
         role: "admin",
         fn: async (client: Client) => {
-            await client.level.add({
+            await client.levels.add({
                 id: 123,
                 name: "newlevel",
                 creator_alt: "testcreator",
@@ -212,7 +212,7 @@ Deno.test("Delete level", async () => {
             });
 
             try {
-                await client.level.delete(123);
+                await client.levels.delete(123);
             } catch (err) {
                 await server
                     .from("levels")
@@ -223,7 +223,7 @@ Deno.test("Delete level", async () => {
             }
 
             try {
-                await client.level.fetch(123);
+                await client.levels.fetch(123);
             } catch {
                 return;
             }
