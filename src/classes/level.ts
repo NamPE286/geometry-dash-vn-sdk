@@ -4,6 +4,9 @@ import { UserData } from "#src/classes/user.ts";
 import { Cache } from "#src/utils/cache.ts";
 
 export class LevelRating {
+    /**
+     * Cache for storing level rating data, keyed by list name.
+     */
     public cache = new Cache<[string], Tables<"level_rating">>();
 
     constructor(data: Tables<"level_rating">[] = []) {
