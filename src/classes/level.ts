@@ -7,7 +7,10 @@ export class LevelRating {
     /**
      * Cache for storing level rating data, keyed by list name.
      */
-    public cache = new Cache<[string], Tables<"level_rating">>();
+    public cache: Cache<[string], Tables<"level_rating">> = new Cache<
+        [string],
+        Tables<"level_rating">
+    >();
 
     constructor(data: Tables<"level_rating">[] = []) {
         this.cache.data = data;
@@ -18,15 +21,18 @@ export class LevelRating {
     }
 }
 
-export class LevelData {
+export class LevelRecord {
     private db: SupabaseClient<Database>;
-    private recordMap = new Map<string, Tables<"records_view">>();
+    private id: number;
+    /**
+     * Cache for storing level ratings, keyed by user ID and list name.
+     */
+    public cache: Cache<[string, string], Tables<"records_view">> = new Cache<
+        [string, string],
+        Tables<"records_view">
+    >();
 
-    public data: Tables<"levels">;
-    public rating: LevelRating;
-    public creators: (Tables<"level_creator"> & { user: UserData })[] = [];
-
-    async getRecords({
+    async fetch({
         range = { start: 0, end: 50 },
         list = "demon",
         ascending = false,
@@ -34,11 +40,11 @@ export class LevelData {
         range?: { start: number; end: number };
         list?: string;
         ascending?: boolean;
-    } = {}): Promise<Tables<"records_view">[]> {
+    } = {}): Promise<Cache<[string, string], Tables<"records_view">>> {
         const { data, error } = await this.db
             .from("records_view")
             .select("*")
-            .match({ level_id: this.data.id, list: list })
+            .match({ level_id: this.id, list: list })
             .order("point", { ascending: ascending })
             .range(range.start, range.end);
 
@@ -46,35 +52,49 @@ export class LevelData {
             throw error;
         }
 
-        this.recordMap.clear();
-
         for (const i of data) {
-            this.recordMap.set(JSON.stringify([i.list!, i.user_id!]), i);
+            this.cache.set([i.list!, i.user_id!], i);
         }
 
-        return data;
+        this.cache.data = data;
+
+        return this.cache;
     }
 
-    async getRecord(list: string, userID: string): Promise<Tables<"records_view">> {
-        if (this.recordMap.has(JSON.stringify([list, userID]))) {
-            return this.recordMap.get(JSON.stringify([list, userID]))!;
-        }
-
+    async fetchSingle(userID: string, list: string): Promise<Tables<"records_view">> {
         const { data, error } = await this.db
             .from("records_view")
             .select("*")
-            .match({ level_id: this.data.id, user_id: userID });
+            .match({ level_id: this.id, user_id: userID, list: list })
+            .single();
 
         if (error) {
             throw error;
         }
 
-        for (const i of data) {
-            this.recordMap.set(JSON.stringify([i.list!, userID]), i);
-        }
+        this.cache.set([userID, list], data);
 
-        return this.recordMap.get(JSON.stringify([list, userID]))!;
+        return data;
     }
+
+    constructor(db: SupabaseClient<Database>, levelID: number, data: Tables<"records_view">[]) {
+        this.db = db;
+        this.id = levelID;
+        this.cache.data = data;
+
+        for (const i of data) {
+            this.cache.set([i.user_id!, i.list!], i);
+        }
+    }
+}
+
+export class LevelData {
+    private db: SupabaseClient<Database>;
+
+    public data: Tables<"levels">;
+    public ratings: LevelRating;
+    public records: LevelRecord;
+    public creators: (Tables<"level_creator"> & { user: UserData })[] = [];
 
     constructor(
         db: SupabaseClient<Database>,
@@ -85,11 +105,8 @@ export class LevelData {
     ) {
         this.db = db;
         this.data = data;
-        this.rating = new LevelRating(ratings);
-
-        for (const i of records) {
-            this.recordMap.set(JSON.stringify([i.list!, i.user_id!]), i);
-        }
+        this.ratings = new LevelRating(ratings);
+        this.records = new LevelRecord(db, data.id, records);
 
         for (const i of creators) {
             const { data, ...creator } = i;

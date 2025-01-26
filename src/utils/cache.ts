@@ -1,5 +1,8 @@
 export class Cache<K extends unknown[], V> {
     private map = new Map<string, V>();
+    /**
+     * Store previous fetched data
+     */
     public data: V[] = [];
 
     get(...key: K): V | undefined {

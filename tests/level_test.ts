@@ -50,13 +50,13 @@ Deno.test("Get level's rating", async () => {
         fn: async (client: Client) => {
             const level = await client.levels.fetch(52374843);
 
-            assertEquals(level.rating.cache.get("demon"), {
+            assertEquals(level.ratings.cache.get("demon"), {
                 id: 52374843,
                 list: "demon",
                 rating: 3500,
                 min_progress: 60,
             });
-            assertEquals(level.rating.cache.get("nonExistence"), undefined);
+            assertEquals(level.ratings.cache.get("nonExistence"), undefined);
         },
     });
 });
@@ -65,13 +65,13 @@ Deno.test("Get level's records", async () => {
     await setupTest({
         fn: async (client: Client) => {
             const level = await client.levels.fetch(52374843);
-            const records = await level.getRecords({ range: { start: 0, end: 1 } });
+            const records = await level.records.fetch({ range: { start: 0, end: 1 } });
 
-            for (const i of records) {
+            for (const i of records.data) {
                 i.exp = i.point = i.no = 0;
             }
 
-            assertEquals(records, [
+            assertEquals(records.data, [
                 {
                     user_id: "fa49b543-083c-4577-958f-ca86a8e295bd",
                     level_id: 52374843,
@@ -102,9 +102,12 @@ Deno.test("Get level's record by user id", async () => {
     await setupTest({
         fn: async (client: Client) => {
             const level = await client.levels.fetch(52374843);
-            const record = await level.getRecord("demon", "ded6b269-a856-4a49-a1ae-d8837d50e350");
+            const record = await level.records.fetchSingle(
+                "ded6b269-a856-4a49-a1ae-d8837d50e350",
+                "demon",
+            );
 
-            record.point = record.exp = record.no = 0;
+            record!.point = record!.exp = record!.no = 0;
 
             assertEquals(record, {
                 user_id: "ded6b269-a856-4a49-a1ae-d8837d50e350",
@@ -117,6 +120,11 @@ Deno.test("Get level's record by user id", async () => {
                 no: 0,
                 exp: 0,
             });
+
+            assertEquals(
+                level.records.cache.get("ded6b269-a856-4a49-a1ae-d8837d50e350", "demon"),
+                record,
+            );
         },
     });
 });
