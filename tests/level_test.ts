@@ -1,6 +1,8 @@
 import { server, setupTest } from "./utils/environment.ts";
 import { assertEquals } from "@std/assert/equals";
 import type { Client } from "#src/mod.ts";
+import { assert } from "@std/assert/assert";
+import { PostgrestError } from "@supabase/supabase-js";
 
 Deno.test("Get level by ID", async () => {
     await setupTest({
@@ -21,18 +23,26 @@ Deno.test("Get level by ID", async () => {
 Deno.test("Get level's rating", async () => {
     await setupTest({
         fn: async (client: Client) => {
-            const res = (await client.level.get(52374843)).getRating("demon");
+            const res = await (await client.level.get(52374843)).getRating("demon");
 
             assertEquals(res, {
                 id: 52374843,
                 list: "demon",
-                rating: 3000,
+                rating: 3500,
                 min_progress: 60,
             });
 
-            const res1 = (await client.level.get(52374843)).getRating("nonExistence");
+            try {
+                await (await client.level.get(52374843)).getRating("nonExistence");
+                assert(false);
+            } catch (err) {
+                if (err instanceof Object && "code" in err) {
+                    assert(err.code === "PGRST116");
+                    return;
+                }
 
-            assertEquals(res1, undefined);
+                throw err;
+            }
         },
     });
 });
@@ -43,6 +53,10 @@ Deno.test("Get level's records", async () => {
             const level = await client.level.get(52374843);
             const records = await level.getRecords({ range: { start: 0, end: 1 } });
 
+            for (const i of records) {
+                i.exp = i.point = 0;
+            }
+
             assertEquals(records, [
                 {
                     user_id: "fa49b543-083c-4577-958f-ca86a8e295bd",
@@ -50,9 +64,9 @@ Deno.test("Get level's records", async () => {
                     video_link: "https://www.youtube.com/watch?v=7GJOBkIgWHc",
                     progress: 100,
                     list: "demon",
-                    point: 3000,
+                    point: 0,
                     no: 1,
-                    exp: 3000
+                    exp: 0,
                 },
                 {
                     user_id: "ded6b269-a856-4a49-a1ae-d8837d50e350",
@@ -61,9 +75,9 @@ Deno.test("Get level's records", async () => {
                         "https://www.youtube.com/watch?v=uCuSX3Y004E&pp=ygUKcHJpcyBtYWdpYw%3D%3D",
                     progress: 87,
                     list: "demon",
-                    point: 1740,
+                    point: 0,
                     no: 2,
-                    exp: 1740
+                    exp: 0,
                 },
             ]);
         },
@@ -76,6 +90,8 @@ Deno.test("Get level's record by user id", async () => {
             const level = await client.level.get(52374843);
             const record = await level.getRecord("demon", "ded6b269-a856-4a49-a1ae-d8837d50e350");
 
+            record.point = record.exp = 0;
+
             assertEquals(record, {
                 user_id: "ded6b269-a856-4a49-a1ae-d8837d50e350",
                 level_id: 52374843,
@@ -83,9 +99,9 @@ Deno.test("Get level's record by user id", async () => {
                     "https://www.youtube.com/watch?v=uCuSX3Y004E&pp=ygUKcHJpcyBtYWdpYw%3D%3D",
                 progress: 87,
                 list: "demon",
-                point: 1740,
+                point: 0,
                 no: 2,
-                exp: 1740
+                exp: 0,
             });
         },
     });

@@ -8,8 +8,22 @@ export class LevelData {
 
     data: Tables<"levels">;
 
-    getRating(list: string): Tables<"level_rating"> | undefined {
-        return this.ratingMap.get(list);
+    async getRating(list: string): Promise<Tables<"level_rating">> {
+        if (this.ratingMap.has(list)) {
+            return this.ratingMap.get(list)!;
+        }
+
+        const { data, error } = await this.db
+            .from("level_rating")
+            .select("*")
+            .match({ id: this.data.id, list: list })
+            .single();
+
+        if (error) {
+            throw error;
+        }
+
+        return data;
     }
 
     async getRecords({
