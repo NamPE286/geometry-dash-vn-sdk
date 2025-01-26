@@ -1,165 +1,28 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables, TablesInsert, TablesUpdate } from "#src/types/supabase.ts";
 import { UserData } from "#src/classes/user.ts";
+import { Cache } from "#src/utils/cache.ts";
 
 export class LevelRating {
-    private db: SupabaseClient<Database>;
-    private id: number;
+    public cache = new Cache<[string], Tables<"level_rating">>();
+    public data: Tables<"level_rating">[];
 
-    public cache = new Map<string, Tables<"level_rating">>();
-
-    /**
-     * Update cache and get level's list rating
-     * @param list Name of the list
-     * @returns Level's list rating
-     */
-    async fetch(list: string | null = null): Promise<Tables<"level_rating"> | undefined> {
-        const { data, error } = await this.db
-            .from("level_rating")
-            .select("*")
-            .match({ id: this.id });
-
-        if (error) {
-            throw error;
-        }
+    constructor(data: Tables<"level_rating">[] = []) {
+        this.data = data;
 
         for (const i of data) {
-            this.cache.set(i.list, i);
+            this.cache.set([i.list], i);
         }
-
-        if (list === null) {
-            return undefined;
-        }
-
-        return this.cache.get(list);
-    }
-
-    /**
-     * @param db Supabase client
-     * @param levelID ID of the level
-     * @param cache Data to preload cache with
-     */
-    constructor(
-        db: SupabaseClient<Database>,
-        levelID: number,
-        cache: Tables<"level_rating">[] = [],
-    ) {
-        this.db = db;
-        this.id = levelID;
-
-        for (const i of cache) {
-            this.cache.set(i.list, i);
-        }
-    }
-}
-
-export class LevelCreator {
-    private db: SupabaseClient<Database>;
-    private id: number;
-
-    public cache: Tables<"level_creator">[];
-
-    /**
-     * Update and return cache
-     * @returns Level's list rating
-     */
-    async fetch(): Promise<Tables<"level_creator">[]> {
-        const { data, error } = await this.db
-            .from("level_creator")
-            .select("*")
-            .eq("id", this.id);
-
-        if (error) {
-            throw error;
-        }
-
-        this.cache = data;
-
-        return this.cache;
-    }
-
-    /**
-     * @param db Supabase client
-     * @param levelID ID of the level
-     * @param cache Data to preload cache with
-     */
-    constructor(
-        db: SupabaseClient<Database>,
-        levelID: number,
-        cache: Tables<"level_creator">[] = [],
-    ) {
-        this.db = db;
-        this.id = levelID;
-        this.cache = cache;
-    }
-}
-
-export class LevelRecord {
-    private db: SupabaseClient<Database>;
-    private id: number;
-
-    public cache: Tables<"records_view">[];
-
-    /**
-     * Update and return cache
-     * @returns Level's list rating
-     */
-    async fetch(): Promise<Tables<"records_view">[]> {
-        const { data, error } = await this.db
-            .from("records_view")
-            .select("*")
-            .eq("level_id", this.id);
-
-        if (error) {
-            throw error;
-        }
-
-        this.cache = data;
-
-        return this.cache;
-    }
-
-    /**
-     * @param db Supabase client
-     * @param levelID ID of the level
-     * @param cache Data to preload cache with
-     */
-    constructor(
-        db: SupabaseClient<Database>,
-        levelID: number,
-        cache: Tables<"records_view">[] = [],
-    ) {
-        this.db = db;
-        this.id = levelID;
-        this.cache = cache;
     }
 }
 
 export class LevelData {
     private db: SupabaseClient<Database>;
-    private ratingMap = new Map<string, Tables<"level_rating">>();
     private recordMap = new Map<string, Tables<"records_view">>();
 
     public data: Tables<"levels">;
+    public rating: LevelRating;
     public creators: (Tables<"level_creator"> & { user: UserData })[] = [];
-
-    async getRating(list: string): Promise<Tables<"level_rating">> {
-        if (this.ratingMap.has(list)) {
-            return this.ratingMap.get(list)!;
-        }
-
-        const { data, error } = await this.db
-            .from("level_rating")
-            .select("*")
-            .match({ id: this.data.id, list: list })
-            .single();
-
-        if (error) {
-            throw error;
-        }
-
-        return data;
-    }
 
     async getRecords({
         range = { start: 0, end: 50 },
@@ -220,10 +83,7 @@ export class LevelData {
     ) {
         this.db = db;
         this.data = data;
-
-        for (const i of ratings) {
-            this.ratingMap.set(i.list, i);
-        }
+        this.rating = new LevelRating(ratings);
 
         for (const i of records) {
             this.recordMap.set(JSON.stringify([i.list!, i.user_id!]), i);
@@ -240,7 +100,7 @@ export class Level {
     private db: SupabaseClient<Database>;
     private APIUrl: string;
 
-    async get(id: number): Promise<LevelData> {
+    async fetch(id: number): Promise<LevelData> {
         const { data, error } = await this.db
             .from("levels")
             .select("*, level_rating(*), level_creator(*, data:users(*))")
