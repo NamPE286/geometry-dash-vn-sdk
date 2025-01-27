@@ -2,11 +2,9 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables, TablesUpdate } from "#src/types/supabase.ts";
 
 export class UserData {
-    private db: SupabaseClient<Database>;
     data: Tables<"users">;
 
     constructor(db: SupabaseClient<Database>, data: Tables<"users">) {
-        this.db = db;
         this.data = data;
     }
 }
