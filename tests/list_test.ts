@@ -12,15 +12,15 @@ Deno.test("Get list", async () => {
             });
             const res: {
                 data: Tables<"levels">;
-                creators: Tables<"level_creator">[];
+                creators: (Tables<"level_creator"> & { data: Tables<"users"> })[];
             }[] = [];
 
             for (const i of list) {
-                const creators: Tables<"level_creator">[] = [];
+                const creators: (Tables<"level_creator"> & { data: Tables<"users"> })[] = [];
 
                 for (const j of i.creators) {
-                    const { user: _user, ...creator } = j;
-                    creators.push(creator);
+                    const { user, ...creator } = j;
+                    creators.push({ ...creator, data: user.data });
                 }
 
                 res.push({ data: i.data, creators: creators });
@@ -57,6 +57,15 @@ Deno.test("Get list", async () => {
                     },
                     creators: [
                         {
+                            data: {
+                                city: null,
+                                name: "Onvil",
+                                role: "default",
+                                user_id: "570eef3f-5510-4b72-94f7-b5d325a70d11",
+                                province: null,
+                                is_hidden: false,
+                                created_at: "2025-01-26T11:19:35.451648+00:00",
+                            },
                             user_id: "570eef3f-5510-4b72-94f7-b5d325a70d11",
                             level_id: 79484035,
                             part_end: 100,
