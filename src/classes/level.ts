@@ -146,8 +146,30 @@ export class Levels {
             range = { start: 0, end: 50 },
             userID = "00000000-0000-0000-0000-000000000000",
         }: ListFilter,
-    ) {
-        // TODO
+    ): Promise<LevelData[]> {
+        const { data, error } = await this.db
+            .from("level_rating")
+            .select(
+                "*, levels(*, level_rating(*), records_view(*), level_creator(*, data:users(*)))",
+            )
+            .eq("list", list)
+            .eq("levels.records_view.list", list)
+            .eq("levels.records_view.user_id", userID)
+            .order("rating", { ascending: false })
+            .range(range.start, range.end);
+
+        if (error) {
+            throw error;
+        }
+
+        const res: LevelData[] = [];
+
+        for (const i of data) {
+            const { level_rating, level_creator, records_view, ...level } = i.levels;
+            res.push(new LevelData(this.db, level, level_creator, level_rating, records_view));
+        }
+
+        return res;
     }
 
     async add(data: TablesInsert<"levels">): Promise<void> {
