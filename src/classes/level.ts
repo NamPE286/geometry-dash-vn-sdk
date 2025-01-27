@@ -20,11 +20,13 @@ export class LevelRatings {
     }
 }
 
+type LevelRecord = Tables<"records_view"> & { level: Tables<"levels"> | null };
+
 export class LevelRecords {
     private db: SupabaseClient<Database>;
     private id: number;
 
-    public map: Map<string, Tables<"records_view">> = new Map<string, Tables<"records_view">>();
+    public map: Map<string, LevelRecord> = new Map<string, LevelRecord>();
     public data: Tables<"records_view">[];
 
     async fetch({
@@ -35,10 +37,10 @@ export class LevelRecords {
         range?: { start: number; end: number };
         list?: string;
         ascending?: boolean;
-    } = {}): Promise<Tables<"records_view">[]> {
+    } = {}): Promise<LevelRecord[]> {
         const { data, error } = await this.db
             .from("records_view")
-            .select("*")
+            .select("*, level:levels(*)")
             .match({ level_id: this.id, list: list })
             .order("point", { ascending: ascending })
             .range(range.start, range.end);
@@ -50,14 +52,14 @@ export class LevelRecords {
         return data;
     }
 
-    async fetchSingle(userID: string, list: string): Promise<Tables<"records_view">> {
+    async fetchSingle(userID: string, list: string): Promise<LevelRecord> {
         if (this.map.has(JSON.stringify([userID, list]))) {
             return this.map.get(JSON.stringify([userID, list]))!;
         }
 
         const { data, error } = await this.db
             .from("records_view")
-            .select("*")
+            .select("*, level:levels(*)")
             .match({ level_id: this.id, user_id: userID, list: list })
             .single();
 
@@ -71,7 +73,7 @@ export class LevelRecords {
     constructor(
         db: SupabaseClient<Database>,
         levelID: number,
-        data: Tables<"records_view">[],
+        data: LevelRecord[],
     ) {
         this.db = db;
         this.id = levelID;
@@ -110,7 +112,7 @@ export class LevelData {
         data: Tables<"levels">,
         creators: (Tables<"level_creator"> & { user: Tables<"users"> })[] = [],
         ratings: Tables<"level_rating">[] = [],
-        records: Tables<"records_view">[] = [],
+        records: LevelRecord[] = [],
     ) {
         this.data = data;
         this.ratings = new LevelRatings(ratings);
@@ -154,7 +156,7 @@ export class Levels {
         const { data, error } = await this.db
             .from("level_rating")
             .select(
-                "*, levels(*, level_rating(*), records_view(*), level_creator(*, user:users(*)))",
+                "*, levels(*, level_rating(*), records_view(*, level:levels(*)), level_creator(*, user:users(*)))",
             )
             .eq("list", list)
             .eq("levels.records_view.list", list)

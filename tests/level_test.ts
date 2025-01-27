@@ -80,6 +80,13 @@ Deno.test("Get level's records", async () => {
                     point: 0,
                     no: 0,
                     exp: 0,
+                    level: {
+                        id: 52374843,
+                        name: "Zodiac",
+                        created_at: "2025-01-19T18:16:01.572288+00:00",
+                        creator_alt: "Bianox and more",
+                        youtube_video_id: "FX9paD5rRsM",
+                    },
                 },
                 {
                     user_id: "ded6b269-a856-4a49-a1ae-d8837d50e350",
@@ -91,6 +98,13 @@ Deno.test("Get level's records", async () => {
                     point: 0,
                     no: 0,
                     exp: 0,
+                    level: {
+                        id: 52374843,
+                        name: "Zodiac",
+                        created_at: "2025-01-19T18:16:01.572288+00:00",
+                        creator_alt: "Bianox and more",
+                        youtube_video_id: "FX9paD5rRsM",
+                    },
                 },
             ]);
         },
@@ -118,6 +132,13 @@ Deno.test("Get level's record by user id", async () => {
                 point: 0,
                 no: 0,
                 exp: 0,
+                level: {
+                    id: 52374843,
+                    name: "Zodiac",
+                    created_at: "2025-01-19T18:16:01.572288+00:00",
+                    creator_alt: "Bianox and more",
+                    youtube_video_id: "FX9paD5rRsM",
+                },
             });
         },
     });
