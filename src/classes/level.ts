@@ -53,7 +53,7 @@ export class LevelRecord {
         }
 
         for (const i of data) {
-            this.cache.set([i.list!, i.user_id!], i);
+            this.cache.set([i.user_id!, i.list!], i);
         }
 
         this.cache.data = data;

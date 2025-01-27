@@ -94,6 +94,18 @@ Deno.test("Get level's records", async () => {
                     exp: 0,
                 },
             ]);
+
+            assertEquals(level.records.cache.get("ded6b269-a856-4a49-a1ae-d8837d50e350", "demon"), {
+                user_id: "ded6b269-a856-4a49-a1ae-d8837d50e350",
+                level_id: 52374843,
+                video_link:
+                    "https://www.youtube.com/watch?v=uCuSX3Y004E&pp=ygUKcHJpcyBtYWdpYw%3D%3D",
+                progress: 87,
+                list: "demon",
+                point: 0,
+                no: 0,
+                exp: 0,
+            });
         },
     });
 });
