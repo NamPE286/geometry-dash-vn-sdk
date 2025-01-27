@@ -20,7 +20,7 @@ export class LevelRatings {
     }
 }
 
-type LevelRecord = Tables<"records_view"> & { level: Tables<"levels"> | null };
+export type LevelRecord = Tables<"records_view"> & { level: Tables<"levels"> | null };
 
 export class LevelRecords {
     private db: SupabaseClient<Database>;
