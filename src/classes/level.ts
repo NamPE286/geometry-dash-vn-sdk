@@ -62,6 +62,10 @@ export class LevelRecord {
     }
 
     async fetchSingle(userID: string, list: string): Promise<Tables<"records_view">> {
+        if(this.cache.has(userID, list)) {
+            return this.cache.get(userID, list)!
+        }
+        
         const { data, error } = await this.db
             .from("records_view")
             .select("*")

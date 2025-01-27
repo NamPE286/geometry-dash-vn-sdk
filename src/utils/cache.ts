@@ -9,6 +9,10 @@ export class Cache<K extends unknown[], V> {
         return this.map.get(JSON.stringify(key));
     }
 
+    has(...key: K): boolean {
+        return this.map.has(JSON.stringify(key));
+    }
+
     set(key: K, value: V): void {
         this.map.set(JSON.stringify(key), value);
     }
