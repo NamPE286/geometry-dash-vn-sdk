@@ -1,6 +1,8 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables, TablesUpdate } from "#src/types/supabase.ts";
 
+export type LevelRecord = Tables<"records_view"> & { user: Tables<"users"> | null };
+
 export class UserRecords {
     private db: SupabaseClient<Database>;
     private userID: string;
@@ -8,14 +10,18 @@ export class UserRecords {
     data: Tables<"records_view">[];
 
     async fetch({
-        range = { start: 0, end: 50 },
         list = "demon",
+        range = { start: 0, end: 50 },
         ascending = false,
     }: {
+        list: string;
         range?: { start: number; end: number };
-        list?: string;
         ascending?: boolean;
-    } = {}) {
+    }) {
+        // TODO
+    }
+
+    async fetchSingle(levelID: number, list: string) {
         // TODO
     }
 

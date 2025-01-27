@@ -30,14 +30,14 @@ export class LevelRecords {
     public data: Tables<"records_view">[];
 
     async fetch({
-        range = { start: 0, end: 50 },
         list = "demon",
+        range = { start: 0, end: 50 },
         ascending = false,
     }: {
+        list: string;
         range?: { start: number; end: number };
-        list?: string;
         ascending?: boolean;
-    } = {}): Promise<LevelRecord[]> {
+    }): Promise<LevelRecord[]> {
         const { data, error } = await this.db
             .from("records_view")
             .select("*, level:levels(*)")
