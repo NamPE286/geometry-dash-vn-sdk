@@ -1,4 +1,4 @@
-import { server, setupTest } from "./utils/environment.ts";
+import { client, server, setupTest } from "./utils/environment.ts";
 import { assertEquals } from "@std/assert/equals";
 import type { Client } from "#src/mod.ts";
 import { assert } from "@std/assert/assert";
@@ -140,6 +140,14 @@ Deno.test("Get level's record by user id", async () => {
         },
     });
 });
+
+Deno.test("Get list", async () => {
+    await setupTest({
+        fn: async (client) => {
+            // TODO
+        }
+    })
+})
 
 Deno.test("Insert new level", async () => {
     await setupTest({
