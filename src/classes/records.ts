@@ -1,5 +1,27 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database, TablesInsert, TablesUpdate } from "#src/types/supabase.ts";
+import type { Database, Tables, TablesInsert, TablesUpdate } from "#src/types/supabase.ts";
+import { LevelData } from "#src/classes/level.ts";
+import { UserData } from "#src/classes/user.ts";
+
+export class RecordData {
+    private db: SupabaseClient<Database>;
+
+    data: Tables<"records_view">;
+    user: UserData | null = null;
+    level: LevelData | null = null;
+
+    constructor(
+        db: SupabaseClient<Database>,
+        data: Tables<"records_view">,
+        user: Tables<"users"> | null = null,
+        level: Tables<"levels"> | null = null,
+    ) {
+        this.db = db;
+        this.data = data;
+        this.user = user === null ? null : new UserData(db, user);
+        this.level = level === null ? null : new LevelData(db, level);
+    }
+}
 
 export class Records {
     private db: SupabaseClient<Database>;

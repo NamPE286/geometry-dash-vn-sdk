@@ -110,7 +110,7 @@ export class LevelData {
     constructor(
         db: SupabaseClient<Database>,
         data: Tables<"levels">,
-        creators: (Tables<"level_creator"> & { user: Tables<"users"> })[],
+        creators: (Tables<"level_creator"> & { user: Tables<"users"> })[] = [],
         ratings: Tables<"level_rating">[] = [],
         records: Tables<"records_view">[] = [],
     ) {
