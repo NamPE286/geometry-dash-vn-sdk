@@ -11,7 +11,7 @@ export class LevelRatings {
         return this.map.get(list);
     }
 
-    constructor(data: Tables<"level_rating">[] = []) {
+    constructor(data: Tables<"level_rating">[]) {
         this.data = data;
 
         for (const i of data) {
@@ -68,7 +68,11 @@ export class LevelRecords {
         return data;
     }
 
-    constructor(db: SupabaseClient<Database>, levelID: number, data: Tables<"records_view">[]) {
+    constructor(
+        db: SupabaseClient<Database>,
+        levelID: number,
+        data: Tables<"records_view">[],
+    ) {
         this.db = db;
         this.id = levelID;
         this.data = data;

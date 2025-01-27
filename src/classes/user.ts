@@ -1,11 +1,42 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables, TablesUpdate } from "#src/types/supabase.ts";
 
+export class UserRecords {
+    private db: SupabaseClient<Database>;
+    private userID: string;
+
+    data: Tables<"records_view">[];
+
+    async fetch({
+        range = { start: 0, end: 50 },
+        list = "demon",
+        ascending = false,
+    }: {
+        range?: { start: number; end: number };
+        list?: string;
+        ascending?: boolean;
+    } = {}) {
+        // TODO
+    }
+
+    constructor(db: SupabaseClient<Database>, userID: string, data: Tables<"records_view">[]) {
+        this.db = db;
+        this.userID = userID;
+        this.data = data;
+    }
+}
+
 export class UserData {
     data: Tables<"users">;
+    records: UserRecords;
 
-    constructor(db: SupabaseClient<Database>, data: Tables<"users">) {
+    constructor(
+        db: SupabaseClient<Database>,
+        data: Tables<"users">,
+        records: Tables<"records_view">[] = [],
+    ) {
         this.data = data;
+        this.records = new UserRecords(db, data.user_id, records);
     }
 }
 
