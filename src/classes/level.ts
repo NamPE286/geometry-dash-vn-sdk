@@ -3,14 +3,17 @@ import type { Database, Tables, TablesInsert, TablesUpdate } from "#src/types/su
 import { UserData } from "#src/classes/user.ts";
 
 export class LevelRatings {
+    private db: SupabaseClient<Database>;
     private map: Map<string, Tables<"level_rating">> = new Map<string, Tables<"level_rating">>();
+
     public data: Tables<"level_rating">[];
 
     get(list: string): Tables<"level_rating"> | undefined {
         return this.map.get(list);
     }
 
-    constructor(data: Tables<"level_rating">[] = []) {
+    constructor(db: SupabaseClient<Database>, data: Tables<"level_rating">[] = []) {
+        this.db = db;
         this.data = data;
 
         for (const i of data) {
@@ -78,30 +81,44 @@ export class LevelRecords {
     }
 }
 
+export class LevelCreators {
+    private db: SupabaseClient<Database>;
+    public data: (Tables<"level_creator"> & { user: UserData })[];
+
+    constructor(
+        db: SupabaseClient<Database>,
+        data: (Tables<"level_creator"> & { user: Tables<"users"> })[],
+    ) {
+        this.db = db;
+        this.data = [];
+
+        for (const i of data) {
+            const { user, ...creator } = i;
+            this.data.push({ ...creator, user: new UserData(db, user) });
+        }
+    }
+}
+
 export class LevelData {
     private db: SupabaseClient<Database>;
 
     public data: Tables<"levels">;
     public ratings: LevelRatings;
     public records: LevelRecords;
-    public creators: (Tables<"level_creator"> & { user: UserData })[] = [];
+    public creators: LevelCreators;
 
     constructor(
         db: SupabaseClient<Database>,
         data: Tables<"levels">,
-        creators: (Tables<"level_creator"> & { data: Tables<"users"> })[],
+        creators: (Tables<"level_creator"> & { user: Tables<"users"> })[],
         ratings: Tables<"level_rating">[] = [],
         records: Tables<"records_view">[] = [],
     ) {
         this.db = db;
         this.data = data;
-        this.ratings = new LevelRatings(ratings);
+        this.ratings = new LevelRatings(db, ratings);
         this.records = new LevelRecords(db, data.id, records);
-
-        for (const i of creators) {
-            const { data, ...creator } = i;
-            this.creators.push({ ...creator, user: new UserData(db, data) });
-        }
+        this.creators = new LevelCreators(db, creators);
     }
 }
 
@@ -117,7 +134,7 @@ export class Levels {
     async fetch(id: number): Promise<LevelData> {
         const { data, error } = await this.db
             .from("levels")
-            .select("*, level_rating(*), level_creator(*, data:users(*))")
+            .select("*, level_rating(*), level_creator(*, user:users(*))")
             .eq("id", id)
             .single();
 
@@ -140,7 +157,7 @@ export class Levels {
         const { data, error } = await this.db
             .from("level_rating")
             .select(
-                "*, levels(*, level_rating(*), records_view(*), level_creator(*, data:users(*)))",
+                "*, levels(*, level_rating(*), records_view(*), level_creator(*, user:users(*)))",
             )
             .eq("list", list)
             .eq("levels.records_view.list", list)

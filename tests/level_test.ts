@@ -25,7 +25,7 @@ Deno.test("Get level's creator", async () => {
             const level = await client.levels.fetch(79484035);
             const res: Tables<"users">[] = [];
 
-            for (const i of level.creators) {
+            for (const i of level.creators.data) {
                 res.push(i.user.data);
             }
 
@@ -132,15 +132,15 @@ Deno.test("Get list", async () => {
             });
             const res: {
                 data: Tables<"levels">;
-                creators: (Tables<"level_creator"> & { data: Tables<"users"> })[];
+                creators: (Tables<"level_creator"> & { user: Tables<"users"> })[];
             }[] = [];
 
             for (const i of list) {
-                const creators: (Tables<"level_creator"> & { data: Tables<"users"> })[] = [];
+                const creators: (Tables<"level_creator"> & { user: Tables<"users"> })[] = [];
 
-                for (const j of i.creators) {
+                for (const j of i.creators.data) {
                     const { user, ...creator } = j;
-                    creators.push({ ...creator, data: user.data });
+                    creators.push({ ...creator, user: user.data });
                 }
 
                 res.push({ data: i.data, creators: creators });
@@ -177,7 +177,7 @@ Deno.test("Get list", async () => {
                     },
                     creators: [
                         {
-                            data: {
+                            user: {
                                 city: null,
                                 name: "Onvil",
                                 role: "default",
