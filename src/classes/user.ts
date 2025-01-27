@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables, TablesUpdate } from "#src/types/supabase.ts";
 
-export type LevelRecord = Tables<"records_view"> & { user: Tables<"users"> | null };
+export type UserRecord = Tables<"records_view"> & { user: Tables<"users"> | null };
 
 export class UserRecords {
     private db: SupabaseClient<Database>;
