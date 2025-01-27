@@ -3,7 +3,6 @@ import type { Database, Tables, TablesInsert, TablesUpdate } from "#src/types/su
 import { UserData } from "#src/classes/user.ts";
 
 export class LevelRatings {
-    private db: SupabaseClient<Database>;
     private map: Map<string, Tables<"level_rating">> = new Map<string, Tables<"level_rating">>();
 
     public data: Tables<"level_rating">[];
@@ -12,8 +11,7 @@ export class LevelRatings {
         return this.map.get(list);
     }
 
-    constructor(db: SupabaseClient<Database>, data: Tables<"level_rating">[] = []) {
-        this.db = db;
+    constructor(data: Tables<"level_rating">[] = []) {
         this.data = data;
 
         for (const i of data) {
@@ -82,14 +80,12 @@ export class LevelRecords {
 }
 
 export class LevelCreators {
-    private db: SupabaseClient<Database>;
     public data: (Tables<"level_creator"> & { user: UserData })[];
 
     constructor(
         db: SupabaseClient<Database>,
         data: (Tables<"level_creator"> & { user: Tables<"users"> })[],
     ) {
-        this.db = db;
         this.data = [];
 
         for (const i of data) {
@@ -100,8 +96,6 @@ export class LevelCreators {
 }
 
 export class LevelData {
-    private db: SupabaseClient<Database>;
-
     public data: Tables<"levels">;
     public ratings: LevelRatings;
     public records: LevelRecords;
@@ -114,9 +108,8 @@ export class LevelData {
         ratings: Tables<"level_rating">[] = [],
         records: Tables<"records_view">[] = [],
     ) {
-        this.db = db;
         this.data = data;
-        this.ratings = new LevelRatings(db, ratings);
+        this.ratings = new LevelRatings(ratings);
         this.records = new LevelRecords(db, data.id, records);
         this.creators = new LevelCreators(db, creators);
     }
