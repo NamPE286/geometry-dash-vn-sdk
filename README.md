@@ -15,5 +15,5 @@ const API_URL: string = "your-api-url";
 
 const client = new Client(SUPABASE_API_URL, SUPABASE_API_KEY, API_URL);
 
-console.log(await client.user.get("uuid"));
+console.log(await client.users.get("uuid"));
 ```

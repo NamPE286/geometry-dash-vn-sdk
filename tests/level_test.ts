@@ -49,13 +49,13 @@ Deno.test("Get level's rating", async () => {
         fn: async (client) => {
             const level = await client.levels.fetch(52374843);
 
-            assertEquals(level.ratings.cache.get("demon"), {
+            assertEquals(level.ratings.get("demon"), {
                 id: 52374843,
                 list: "demon",
                 rating: 3500,
                 min_progress: 60,
             });
-            assertEquals(level.ratings.cache.get("nonExistence"), undefined);
+            assertEquals(level.ratings.get("nonExistence"), undefined);
         },
     });
 });
@@ -66,11 +66,11 @@ Deno.test("Get level's records", async () => {
             const level = await client.levels.fetch(52374843);
             const records = await level.records.fetch({ range: { start: 0, end: 1 } });
 
-            for (const i of records.data) {
+            for (const i of records) {
                 i.exp = i.point = i.no = 0;
             }
 
-            assertEquals(records.data, [
+            assertEquals(records, [
                 {
                     user_id: "fa49b543-083c-4577-958f-ca86a8e295bd",
                     level_id: 52374843,
@@ -93,18 +93,6 @@ Deno.test("Get level's records", async () => {
                     exp: 0,
                 },
             ]);
-
-            assertEquals(level.records.cache.get("ded6b269-a856-4a49-a1ae-d8837d50e350", "demon"), {
-                user_id: "ded6b269-a856-4a49-a1ae-d8837d50e350",
-                level_id: 52374843,
-                video_link:
-                    "https://www.youtube.com/watch?v=uCuSX3Y004E&pp=ygUKcHJpcyBtYWdpYw%3D%3D",
-                progress: 87,
-                list: "demon",
-                point: 0,
-                no: 0,
-                exp: 0,
-            });
         },
     });
 });
@@ -131,11 +119,6 @@ Deno.test("Get level's record by user id", async () => {
                 no: 0,
                 exp: 0,
             });
-
-            assertEquals(
-                level.records.cache.get("ded6b269-a856-4a49-a1ae-d8837d50e350", "demon"),
-                record,
-            );
         },
     });
 });
