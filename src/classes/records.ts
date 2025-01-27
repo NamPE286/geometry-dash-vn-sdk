@@ -28,7 +28,19 @@ export class Records {
     private APIUrl: string;
 
     async fetch(levelID: number, userID: string) {
-        // TODO
+        const { data, error } = await this.db
+            .from("records_view")
+            .select("*, levels(*), users(*)")
+            .match({ level_id: levelID, user_id: userID })
+            .single();
+
+        if (error) {
+            throw error;
+        }
+
+        const { levels, users, ...recordData } = data;
+
+        return new RecordData(this.db, recordData, users, levels);
     }
 
     async add(data: TablesInsert<"records">): Promise<void> {
