@@ -115,6 +115,11 @@ export class LevelData {
     }
 }
 
+interface ListFilter {
+    range?: { start: number; end: number };
+    userID?: string;
+}
+
 export class Levels {
     private db: SupabaseClient<Database>;
     private APIUrl: string;
@@ -133,6 +138,16 @@ export class Levels {
         const { level_rating, level_creator, ...level } = data;
 
         return new LevelData(this.db, level, level_creator, level_rating);
+    }
+
+    async fetchList(
+        list: string,
+        {
+            range = { start: 0, end: 50 },
+            userID = "00000000-0000-0000-0000-000000000000",
+        }: ListFilter,
+    ) {
+        // TODO
     }
 
     async add(data: TablesInsert<"levels">): Promise<void> {
