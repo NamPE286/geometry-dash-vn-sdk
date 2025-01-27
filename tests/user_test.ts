@@ -1,11 +1,10 @@
 import { assertEquals } from "jsr:@std/assert";
 import { setupTest, signOutClient } from "./utils/environment.ts";
 import "jsr:@std/dotenv/load";
-import type { Client } from "#src/mod.ts";
 
 Deno.test("Insert new user", async () => {
     await setupTest({
-        fn: async (client: Client) => {
+        fn: async (client) => {
             try {
                 const { data, error } = await client.db.auth.signUp({
                     email: "test@bitbucket.local",
@@ -44,7 +43,7 @@ Deno.test("Insert new user", async () => {
 Deno.test("Edit user by UID", async () => {
     await setupTest({
         signedIn: true,
-        fn: async (client: Client) => {
+        fn: async (client) => {
             const { data } = await client.db.auth.getUser();
 
             await client.users.update({
@@ -61,7 +60,7 @@ Deno.test("Edit user by UID", async () => {
 
 Deno.test("Get user by UID", async () => {
     await setupTest({
-        fn: async (client: Client) => {
+        fn: async (client) => {
             const { data } = await client.users.get("ded6b269-a856-4a49-a1ae-d8837d50e350");
 
             assertEquals(data, {

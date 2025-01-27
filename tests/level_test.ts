@@ -1,12 +1,11 @@
-import { client, server, setupTest } from "./utils/environment.ts";
+import { server, setupTest } from "./utils/environment.ts";
 import { assertEquals } from "@std/assert/equals";
-import type { Client } from "#src/mod.ts";
 import { assert } from "@std/assert/assert";
 import type { Tables } from "#src/types/supabase.ts";
 
 Deno.test("Get level by ID", async () => {
     await setupTest({
-        fn: async (client: Client) => {
+        fn: async (client) => {
             const level = await client.levels.fetch(52374843);
 
             assertEquals(level.data, {
@@ -22,7 +21,7 @@ Deno.test("Get level by ID", async () => {
 
 Deno.test("Get level's creator", async () => {
     await setupTest({
-        fn: async (client: Client) => {
+        fn: async (client) => {
             const level = await client.levels.fetch(79484035);
             const res: Tables<"users">[] = [];
 
@@ -47,7 +46,7 @@ Deno.test("Get level's creator", async () => {
 
 Deno.test("Get level's rating", async () => {
     await setupTest({
-        fn: async (client: Client) => {
+        fn: async (client) => {
             const level = await client.levels.fetch(52374843);
 
             assertEquals(level.ratings.cache.get("demon"), {
@@ -63,7 +62,7 @@ Deno.test("Get level's rating", async () => {
 
 Deno.test("Get level's records", async () => {
     await setupTest({
-        fn: async (client: Client) => {
+        fn: async (client) => {
             const level = await client.levels.fetch(52374843);
             const records = await level.records.fetch({ range: { start: 0, end: 1 } });
 
@@ -112,7 +111,7 @@ Deno.test("Get level's records", async () => {
 
 Deno.test("Get level's record by user id", async () => {
     await setupTest({
-        fn: async (client: Client) => {
+        fn: async (client) => {
             const level = await client.levels.fetch(52374843);
             const record = await level.records.fetchSingle(
                 "ded6b269-a856-4a49-a1ae-d8837d50e350",
@@ -145,15 +144,15 @@ Deno.test("Get list", async () => {
     await setupTest({
         fn: async (client) => {
             // TODO
-        }
-    })
-})
+        },
+    });
+});
 
 Deno.test("Insert new level", async () => {
     await setupTest({
         signedIn: true,
         role: "admin",
-        fn: async (client: Client) => {
+        fn: async (client) => {
             try {
                 await client.levels.add({
                     id: 123,
@@ -193,7 +192,7 @@ Deno.test("Edit level", async () => {
     await setupTest({
         signedIn: true,
         role: "admin",
-        fn: async (client: Client) => {
+        fn: async (client) => {
             await client.levels.add({
                 id: 123,
                 name: "newlevel",
@@ -231,7 +230,7 @@ Deno.test("Delete level", async () => {
     await setupTest({
         signedIn: true,
         role: "admin",
-        fn: async (client: Client) => {
+        fn: async (client) => {
             await client.levels.add({
                 id: 123,
                 name: "newlevel",

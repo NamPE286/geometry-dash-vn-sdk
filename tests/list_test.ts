@@ -1,11 +1,10 @@
 import { assertEquals } from "@std/assert/equals";
 import { setupTest } from "./utils/environment.ts";
-import type { Client } from "#src/mod.ts";
 import type { Tables } from "#src/types/supabase.ts";
 
 Deno.test("Get list", async () => {
     await setupTest({
-        fn: async (client: Client) => {
+        fn: async (client) => {
             const list = await client.list.getLevels("demon", {
                 range: { start: 0, end: 2 },
                 userID: "ded6b269-a856-4a49-a1ae-d8837d50e350",
