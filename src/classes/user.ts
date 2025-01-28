@@ -94,6 +94,7 @@ export class Users {
         return new UserData(this.db, data);
     }
 
+    // Use TablesUpdate type because user id will be taken from token
     async create(obj: TablesUpdate<"users">): Promise<void> {
         const res = await fetch(`${this.APIUrl}/user`, {
             method: "POST",
