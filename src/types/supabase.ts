@@ -153,23 +153,38 @@ export type Database = {
       }
       records: {
         Row: {
+          comment: string | null
           created_at: string
           level_id: number
+          moderator_note: string | null
           progress: number
+          reviewer_id: string | null
+          reviewer_note: string | null
+          status: number
           user_id: string
           video_link: string
         }
         Insert: {
+          comment?: string | null
           created_at?: string
           level_id: number
+          moderator_note?: string | null
           progress: number
+          reviewer_id?: string | null
+          reviewer_note?: string | null
+          status?: number
           user_id: string
           video_link: string
         }
         Update: {
+          comment?: string | null
           created_at?: string
           level_id?: number
+          moderator_note?: string | null
           progress?: number
+          reviewer_id?: string | null
+          reviewer_note?: string | null
+          status?: number
           user_id?: string
           video_link?: string
         }
@@ -180,6 +195,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "levels"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "records_reviewer_id_fkey"
+            columns: ["reviewer_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "records_user_id_fkey"
@@ -271,7 +293,6 @@ export type Database = {
           exp: number | null
           level_id: number | null
           list: string | null
-          no: number | null
           point: number | null
           progress: number | null
           user_id: string | null

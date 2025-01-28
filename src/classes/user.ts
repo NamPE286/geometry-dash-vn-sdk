@@ -16,7 +16,7 @@ export class UserRecords {
     }: {
         range?: { start: number; end: number };
         ascending?: boolean;
-    }): Promise<UserRecord[]> {
+    } = {}): Promise<UserRecord[]> {
         const { data, error } = await this.db
             .from("records_view")
             .select("*, user:users(*)")

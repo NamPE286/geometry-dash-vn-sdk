@@ -26,7 +26,7 @@ export class LevelRecords {
     private db: SupabaseClient<Database>;
     private id: number;
     private map: Map<string, LevelRecord> = new Map<string, LevelRecord>();
-    
+
     public data: LevelRecord[];
 
     async fetch(list: string, {
@@ -35,7 +35,7 @@ export class LevelRecords {
     }: {
         range?: { start: number; end: number };
         ascending?: boolean;
-    }): Promise<LevelRecord[]> {
+    } = {}): Promise<LevelRecord[]> {
         const { data, error } = await this.db
             .from("records_view")
             .select("*, level:levels(*)")
@@ -121,11 +121,6 @@ export class LevelData {
     }
 }
 
-interface ListFilter {
-    range?: { start: number; end: number };
-    userID?: string;
-}
-
 export class Levels {
     private db: SupabaseClient<Database>;
     private APIUrl: string;
@@ -151,7 +146,10 @@ export class Levels {
         {
             range = { start: 0, end: 50 },
             userID = "00000000-0000-0000-0000-000000000000",
-        }: ListFilter,
+        }: {
+            range?: { start: number; end: number };
+            userID?: string;
+        } = {},
     ): Promise<LevelData[]> {
         const { data, error } = await this.db
             .from("level_rating")

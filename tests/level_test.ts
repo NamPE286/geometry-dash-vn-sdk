@@ -67,7 +67,7 @@ Deno.test("Fetch level's records", async () => {
             const records = await level.records.fetch("demon", { range: { start: 0, end: 1 } });
 
             for (const i of records) {
-                i.exp = i.point = i.no = 0;
+                i.exp = i.point = 0;
             }
 
             assertEquals(records, [
@@ -78,7 +78,6 @@ Deno.test("Fetch level's records", async () => {
                     progress: 100,
                     list: "demon",
                     point: 0,
-                    no: 0,
                     exp: 0,
                     level: {
                         id: 52374843,
@@ -96,7 +95,6 @@ Deno.test("Fetch level's records", async () => {
                     progress: 87,
                     list: "demon",
                     point: 0,
-                    no: 0,
                     exp: 0,
                     level: {
                         id: 52374843,
@@ -120,7 +118,7 @@ Deno.test("Fetch level's record by user id", async () => {
                 "demon",
             );
 
-            record!.point = record!.exp = record!.no = 0;
+            record!.point = record!.exp = 0;
 
             assertEquals(record, {
                 user_id: "ded6b269-a856-4a49-a1ae-d8837d50e350",
@@ -130,7 +128,6 @@ Deno.test("Fetch level's record by user id", async () => {
                 progress: 87,
                 list: "demon",
                 point: 0,
-                no: 0,
                 exp: 0,
                 level: {
                     id: 52374843,
