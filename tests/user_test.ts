@@ -58,7 +58,7 @@ Deno.test("Edit user by UID", async () => {
     });
 });
 
-Deno.test("Get user by UID", async () => {
+Deno.test("Fetch user by UID", async () => {
     await setupTest({
         fn: async (client) => {
             const { data } = await client.users.get("ded6b269-a856-4a49-a1ae-d8837d50e350");

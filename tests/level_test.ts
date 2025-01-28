@@ -3,7 +3,7 @@ import { assertEquals } from "@std/assert/equals";
 import { assert } from "@std/assert/assert";
 import type { Tables } from "#src/types/supabase.ts";
 
-Deno.test("Get level by ID", async () => {
+Deno.test("Fetch level by ID", async () => {
     await setupTest({
         fn: async (client) => {
             const level = await client.levels.fetch(52374843);
@@ -19,7 +19,7 @@ Deno.test("Get level by ID", async () => {
     });
 });
 
-Deno.test("Get level's creator", async () => {
+Deno.test("Fetch level's creator", async () => {
     await setupTest({
         fn: async (client) => {
             const level = await client.levels.fetch(79484035);
@@ -44,7 +44,7 @@ Deno.test("Get level's creator", async () => {
     });
 });
 
-Deno.test("Get level's rating", async () => {
+Deno.test("Fetch level's rating", async () => {
     await setupTest({
         fn: async (client) => {
             const level = await client.levels.fetch(52374843);
@@ -60,7 +60,7 @@ Deno.test("Get level's rating", async () => {
     });
 });
 
-Deno.test("Get level's records", async () => {
+Deno.test("Fetch level's records", async () => {
     await setupTest({
         fn: async (client) => {
             const level = await client.levels.fetch(52374843);
@@ -111,7 +111,7 @@ Deno.test("Get level's records", async () => {
     });
 });
 
-Deno.test("Get level's record by user id", async () => {
+Deno.test("Fetch level's record by user id", async () => {
     await setupTest({
         fn: async (client) => {
             const level = await client.levels.fetch(52374843);
@@ -144,7 +144,7 @@ Deno.test("Get level's record by user id", async () => {
     });
 });
 
-Deno.test("Get list", async () => {
+Deno.test("Fetch list", async () => {
     await setupTest({
         fn: async (client) => {
             const list = await client.levels.fetchList("demon", {
