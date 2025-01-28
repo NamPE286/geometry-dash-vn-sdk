@@ -5,6 +5,7 @@ export type UserRecord = Tables<"records_view"> & { user: Tables<"users"> | null
 
 export class UserRecords {
     private db: SupabaseClient<Database>;
+    private map: Map<string, UserRecord> = new Map<string, UserRecord>();
     private userID: string;
 
     data: UserRecord[];
@@ -15,18 +16,49 @@ export class UserRecords {
     }: {
         range?: { start: number; end: number };
         ascending?: boolean;
-    }) {
-        // TODO
+    }): Promise<UserRecord[]> {
+        const { data, error } = await this.db
+            .from("records_view")
+            .select("*, user:users(*)")
+            .match({ user_id: this.userID, list: list })
+            .order("point", { ascending: ascending })
+            .range(range.start, range.end);
+
+        if (error) {
+            throw error;
+        }
+
+        this.data = data;
+
+        return data;
     }
 
-    async fetchSingle(levelID: number, list: string) {
-        // TODO
+    async fetchSingle(levelID: number, list: string): Promise<UserRecord> {
+        if (this.map.has(JSON.stringify([this.userID, list]))) {
+            return this.map.get(JSON.stringify([this.userID, list]))!;
+        }
+
+        const { data, error } = await this.db
+            .from("records_view")
+            .select("*, user:users(*)")
+            .match({ level_id: levelID, user_id: this.userID, list: list })
+            .single();
+
+        if (error) {
+            throw error;
+        }
+
+        return data;
     }
 
     constructor(db: SupabaseClient<Database>, userID: string, data: UserRecord[]) {
         this.db = db;
         this.userID = userID;
         this.data = data;
+
+        for (const i of data) {
+            this.map.set(JSON.stringify([i.user_id, i.list]), i);
+        }
     }
 }
 

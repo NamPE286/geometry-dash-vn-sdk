@@ -25,8 +25,8 @@ export type LevelRecord = Tables<"records_view"> & { level: Tables<"levels"> | n
 export class LevelRecords {
     private db: SupabaseClient<Database>;
     private id: number;
-
-    public map: Map<string, LevelRecord> = new Map<string, LevelRecord>();
+    private map: Map<string, LevelRecord> = new Map<string, LevelRecord>();
+    
     public data: LevelRecord[];
 
     async fetch(list: string, {
