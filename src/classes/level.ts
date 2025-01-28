@@ -29,12 +29,10 @@ export class LevelRecords {
     public map: Map<string, LevelRecord> = new Map<string, LevelRecord>();
     public data: Tables<"records_view">[];
 
-    async fetch({
-        list = "demon",
+    async fetch(list: string, {
         range = { start: 0, end: 50 },
         ascending = false,
     }: {
-        list: string;
         range?: { start: number; end: number };
         ascending?: boolean;
     }): Promise<LevelRecord[]> {

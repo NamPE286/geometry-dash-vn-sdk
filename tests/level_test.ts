@@ -64,7 +64,7 @@ Deno.test("Get level's records", async () => {
     await setupTest({
         fn: async (client) => {
             const level = await client.levels.fetch(52374843);
-            const records = await level.records.fetch({ range: { start: 0, end: 1 } });
+            const records = await level.records.fetch("demon", { range: { start: 0, end: 1 } });
 
             for (const i of records) {
                 i.exp = i.point = i.no = 0;
