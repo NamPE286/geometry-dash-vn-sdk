@@ -27,7 +27,7 @@ export class LevelRecords {
     private id: number;
 
     public map: Map<string, LevelRecord> = new Map<string, LevelRecord>();
-    public data: Tables<"records_view">[];
+    public data: LevelRecord[];
 
     async fetch(list: string, {
         range = { start: 0, end: 50 },
@@ -46,6 +46,8 @@ export class LevelRecords {
         if (error) {
             throw error;
         }
+
+        this.data = data;
 
         return data;
     }

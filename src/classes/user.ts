@@ -7,14 +7,12 @@ export class UserRecords {
     private db: SupabaseClient<Database>;
     private userID: string;
 
-    data: Tables<"records_view">[];
+    data: UserRecord[];
 
-    async fetch({
-        list = "demon",
+    async fetch(list: string, {
         range = { start: 0, end: 50 },
         ascending = false,
     }: {
-        list: string;
         range?: { start: number; end: number };
         ascending?: boolean;
     }) {
@@ -25,7 +23,7 @@ export class UserRecords {
         // TODO
     }
 
-    constructor(db: SupabaseClient<Database>, userID: string, data: Tables<"records_view">[]) {
+    constructor(db: SupabaseClient<Database>, userID: string, data: UserRecord[]) {
         this.db = db;
         this.userID = userID;
         this.data = data;
@@ -39,7 +37,7 @@ export class UserData {
     constructor(
         db: SupabaseClient<Database>,
         data: Tables<"users">,
-        records: Tables<"records_view">[] = [],
+        records: UserRecord[] = [],
     ) {
         this.data = data;
         this.records = new UserRecords(db, data.user_id, records);
